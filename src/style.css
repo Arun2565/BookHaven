@@ -1238,8 +1238,16 @@ input {
 }
 
 .hl-underline {
-  background: #eeeafd;
-  color: #543bb7;
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.epubjs-hl-underline, g[class*="underline"], line[class*="underline"], path[class*="underline"] {
+  stroke: #dc2626 !important;
+  stroke-width: 3.5px !important;
+  stroke-opacity: 0.95 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
 }
 
 .hl-btn svg {

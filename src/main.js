@@ -33,6 +33,8 @@ const state = {
   currentSelection: null
 };
 
+let justSelected = false;
+
 // DOM Elements
 const els = {
   views: {
@@ -268,6 +270,7 @@ function setupEventListeners() {
   
   // Close toolbar on click outside
   document.addEventListener('click', (e) => {
+    if (justSelected) return;
     if (!e.target.closest('#highlight-toolbar') && els.annotations.toolbar.classList.contains('show')) {
       els.annotations.toolbar.classList.remove('show');
     }
@@ -640,6 +643,9 @@ async function openBook(id) {
       els.annotations.toolbar.style.top = `${top}px`;
       els.annotations.toolbar.style.left = `${left}px`;
       els.annotations.toolbar.classList.add('show');
+
+      justSelected = true;
+      setTimeout(() => { justSelected = false; }, 400);
     });
 
     state.rendition.on('markClicked', (cfiRange, data, contents) => {
@@ -1152,7 +1158,7 @@ async function addHighlight(color) {
 }
 
 async function addUnderline() {
-  await addAnnotation('underline', '#6c4ce6');
+  await addAnnotation('underline', '#dc2626');
   showToast('Underline saved');
 }
 
