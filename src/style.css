@@ -556,26 +556,29 @@ input {
 #reader-view {
   background-color: var(--reader-bg);
   transition: background-color 0.3s;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
 }
 
 .reader-header {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
-  padding: 16px 24px;
+  padding: 12px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: var(--reader-bg);
   z-index: 30;
-  transform: translateY(-100%);
-  transition: transform 0.3s ease, background-color 0.3s;
   border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
-.reader-header.show {
-  transform: translateY(0);
+.reader-header:not(.show) {
+  display: none;
 }
 
 .reader-btn {
@@ -619,7 +622,8 @@ input {
   flex: 1;
   display: flex;
   position: relative;
-  height: 100%;
+  min-height: 0;
+  width: 100%;
   overflow: hidden;
 }
 
@@ -676,24 +680,22 @@ input {
 
 /* Reader Footer */
 .reader-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  position: relative;
   width: 100%;
-  padding: 16px 40px;
+  padding: 12px 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 24px;
   background-color: var(--reader-bg);
   z-index: 30;
-  transform: translateY(100%);
-  transition: transform 0.3s ease, background-color 0.3s;
   border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
-.reader-footer.show {
-  transform: translateY(0);
+.reader-footer:not(.show) {
+  display: none;
 }
 
 .reader-location, .reader-percent {

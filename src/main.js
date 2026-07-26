@@ -1,27 +1,18 @@
 import ePub from 'epubjs';
 import localforage from 'localforage';
 import JSZip from 'jszip';
-import alegreyaFont from '@fontsource/alegreya/files/alegreya-latin-400-normal.woff2?url';
-import atkinsonFont from '@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-normal.woff2?url';
-import crimsonFont from '@fontsource/crimson-pro/files/crimson-pro-latin-400-normal.woff2?url';
 import ebGaramondFont from '@fontsource/eb-garamond/files/eb-garamond-latin-400-normal.woff2?url';
 import frauncesFont from '@fontsource/fraunces/files/fraunces-latin-400-normal.woff2?url';
-import lexendFont from '@fontsource/lexend/files/lexend-latin-400-normal.woff2?url';
-import literataFont from '@fontsource/literata/files/literata-latin-400-normal.woff2?url';
 import newsreaderFont from '@fontsource/newsreader/files/newsreader-latin-400-normal.woff2?url';
-import sourceSerifFont from '@fontsource/source-serif-4/files/source-serif-4-latin-400-normal.woff2?url';
 
 const READER_FONT_CSS = [
-  ['Alegreya', alegreyaFont],
-  ['Atkinson Hyperlegible', atkinsonFont],
-  ['Crimson Pro', crimsonFont],
   ['EB Garamond', ebGaramondFont],
   ['Fraunces', frauncesFont],
-  ['Lexend', lexendFont],
-  ['Literata', literataFont],
-  ['Newsreader', newsreaderFont],
-  ['Source Serif 4', sourceSerifFont]
-].map(([family, url]) => `@font-face { font-family: "${family}"; src: url("${url}") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }`).join('\n');
+  ['Newsreader', newsreaderFont]
+].map(([family, url]) => `@font-face { font-family: "${family}"; src: url("${url}") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }`).join('\n') + `
+::selection { background: rgba(147, 197, 253, 0.55) !important; color: inherit !important; }
+::-moz-selection { background: rgba(147, 197, 253, 0.55) !important; color: inherit !important; }
+`;
 
 // App State
 const state = {
@@ -256,6 +247,7 @@ function setupEventListeners() {
   
   // Annotations Events
   els.annotations.btns.forEach(btn => {
+    btn.addEventListener('mousedown', (e) => e.preventDefault());
     btn.addEventListener('click', (e) => {
       const target = e.currentTarget;
       if (target.classList.contains('hl-note')) {
@@ -964,21 +956,9 @@ function setupRenditionTheme() {
   // Map font-family choices
   const fontMap = {
     'default': '"Newsreader", Georgia, serif',
+    'newsreader': '"Newsreader", Georgia, serif',
     'fraunces': '"Fraunces", Georgia, serif',
-    'ebgaramond': '"EB Garamond", Georgia, serif',
-    'crimson': '"Crimson Pro", Georgia, serif',
-    'alegreya': '"Alegreya", Georgia, serif',
-    'literata': '"Literata", serif',
-    'source': '"Source Serif 4", Georgia, serif',
-    'hyperlegible': '"Atkinson Hyperlegible", Arial, sans-serif',
-    'lexend': '"Lexend", Arial, sans-serif',
-    // Keep existing readers' saved choices working after the font refresh.
-    'serif': '"Source Serif 4", Georgia, serif',
-    'sans': '"Atkinson Hyperlegible", Arial, sans-serif',
-    'merriweather': 'Georgia, serif',
-    'opensans': 'Arial, sans-serif',
-    'lora': 'Georgia, serif',
-    'firasans': 'Arial, sans-serif'
+    'ebgaramond': '"EB Garamond", Georgia, serif'
   };
   
   // Map theme colors
