@@ -625,14 +625,17 @@ async function openBook(id) {
     
     state.rendition.on('selected', (cfiRange, contents) => {
       state.currentSelection = { cfiRange, contents };
-      const range = contents.window.getSelection().getRangeAt(0);
+      const selection = contents.window.getSelection();
+      if (!selection.rangeCount) return;
+      const range = selection.getRangeAt(0);
       const rect = range.getBoundingClientRect();
       const iframe = els.reader.area.querySelector('iframe');
       if (!iframe) return;
       const iframeRect = iframe.getBoundingClientRect();
       
-      const top = iframeRect.top + rect.top - 50;
-      const left = iframeRect.left + rect.left + (rect.width / 2) - (els.annotations.toolbar.offsetWidth / 2 || 100);
+      const toolbarWidth = els.annotations.toolbar.offsetWidth || 240;
+      const top = Math.max(16, iframeRect.top + rect.top - 54);
+      const left = Math.max(16, Math.min(window.innerWidth - toolbarWidth - 16, iframeRect.left + rect.left + (rect.width / 2) - (toolbarWidth / 2)));
       
       els.annotations.toolbar.style.top = `${top}px`;
       els.annotations.toolbar.style.left = `${left}px`;

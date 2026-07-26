@@ -1,4 +1,4 @@
-const { app, BrowserWindow, shell } = require('electron');
+const { app, BrowserWindow, shell, dialog } = require('electron');
 const path = require('node:path');
 const { autoUpdater } = require('electron-updater');
 
@@ -38,6 +38,21 @@ app.whenReady().then(() => {
   createWindow();
 
   if (!isDevelopment) {
+    autoUpdater.on('update-downloaded', (info) => {
+      dialog.showMessageBox({
+        type: 'info',
+        title: 'Update Ready',
+        message: `A new version of BookHaven (v${info.version}) has been downloaded.`,
+        detail: 'Would you like to restart BookHaven now to apply the update?',
+        buttons: ['Restart & Install Now', 'Later'],
+        defaultId: 0
+      }).then((result) => {
+        if (result.response === 0) {
+          autoUpdater.quitAndInstall();
+        }
+      });
+    });
+
     autoUpdater.checkForUpdatesAndNotify().catch((err) => {
       console.log('Update check skipped or failed:', err.message);
     });
