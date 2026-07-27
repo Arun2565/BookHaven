@@ -10,17 +10,32 @@ const READER_FONT_CSS = [
   ['Fraunces', frauncesFont],
   ['Newsreader', newsreaderFont]
 ].map(([family, url]) => `@font-face { font-family: "${family}"; src: url("${url}") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }`).join('\n') + `
-::selection { background: rgba(147, 197, 253, 0.55) !important; color: inherit !important; }
-::-moz-selection { background: rgba(147, 197, 253, 0.55) !important; color: inherit !important; }
+::selection { background: rgba(99, 102, 241, 0.3) !important; color: inherit !important; }
+::-moz-selection { background: rgba(99, 102, 241, 0.3) !important; color: inherit !important; }
 
 /* Custom styles for annotations inside the EPUB iframe */
 .bookhaven-underline {
-  stroke-width: 3.5px !important;
+  stroke-width: 2.5px !important;
   stroke-opacity: 1.0 !important;
+  stroke-linecap: round !important;
+  transform: translateY(4px) !important; /* Shift line down below text descenders */
 }
 
 .bookhaven-highlight {
   fill-opacity: 0.35 !important;
+  rx: 4px !important; /* Rounded corners for highlights */
+  ry: 4px !important;
+  mix-blend-mode: multiply !important; /* Blend highlight cleanly with text */
+}
+
+.theme-dark .bookhaven-highlight {
+  fill-opacity: 0.28 !important;
+  mix-blend-mode: screen !important;
+}
+
+.theme-sepia .bookhaven-highlight {
+  fill-opacity: 0.4 !important;
+  mix-blend-mode: multiply !important;
 }
 `;
 
@@ -601,6 +616,10 @@ async function openBook(id) {
     // reading font instead of relying on a network font request.
     state.rendition.hooks.content.register((contents) => {
       contents.addStylesheetCss(READER_FONT_CSS, 'bookhaven-reader-fonts');
+      if (contents.document && contents.document.body) {
+        contents.document.body.classList.remove('theme-light', 'theme-sepia', 'theme-dark');
+        contents.document.body.classList.add(`theme-${state.theme}`);
+      }
     });
     
     // Setup Styling
@@ -1040,6 +1059,19 @@ function setupRenditionTheme() {
     const epubView = els.reader.area.querySelector('.epub-view');
     if (epubView) epubView.style.padding = paddingMap[state.margin];
   }, 100);
+
+  // Sync theme classes to all active iframe bodies dynamically
+  if (state.rendition.views) {
+    state.rendition.views().forEach(view => {
+      if (view.iframe && view.iframe.contentDocument) {
+        const body = view.iframe.contentDocument.body;
+        if (body) {
+          body.classList.remove('theme-light', 'theme-sepia', 'theme-dark');
+          body.classList.add(`theme-${state.theme}`);
+        }
+      }
+    });
+  }
 }
 
 // -----------------------------------------------------------------------------
