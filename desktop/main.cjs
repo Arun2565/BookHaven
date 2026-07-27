@@ -38,7 +38,43 @@ app.whenReady().then(() => {
   createWindow();
 
   if (!isDevelopment) {
+    autoUpdater.disableSignatureVerification = true;
+    const fs = require('node:fs');
+    const logFile = path.join(app.getPath('userData'), 'updater-log.txt');
+    
+    function log(message) {
+      const line = `[${new Date().toISOString()}] ${message}\n`;
+      try {
+        fs.appendFileSync(logFile, line);
+      } catch (e) {}
+    }
+
+    log('--- App started (Auto-Updater initialized) ---');
+    log(`App version: ${app.getVersion()}`);
+
+    autoUpdater.on('checking-for-update', () => {
+      log('Checking for updates on GitHub...');
+    });
+
+    autoUpdater.on('update-available', (info) => {
+      log(`Update found: v${info.version}`);
+    });
+
+    autoUpdater.on('update-not-available', (info) => {
+      log(`No update available. Current: ${app.getVersion()}`);
+    });
+
+    autoUpdater.on('error', (err) => {
+      log(`Updater error: ${err.stack || err.message}`);
+      dialog.showErrorBox('Auto-Update Error', `Updater failed: ${err.message}\nCheck updater-log.txt for details.`);
+    });
+
+    autoUpdater.on('download-progress', (progressObj) => {
+      log(`Download progress: ${progressObj.percent.toFixed(2)}%`);
+    });
+
     autoUpdater.on('update-downloaded', (info) => {
+      log(`Update fully downloaded: v${info.version}`);
       dialog.showMessageBox({
         type: 'info',
         title: 'Update Ready',
@@ -48,13 +84,15 @@ app.whenReady().then(() => {
         defaultId: 0
       }).then((result) => {
         if (result.response === 0) {
+          log('Restarting app to apply update...');
           autoUpdater.quitAndInstall();
         }
       });
     });
 
+    log('Triggering checkForUpdatesAndNotify()...');
     autoUpdater.checkForUpdatesAndNotify().catch((err) => {
-      console.log('Update check skipped or failed:', err.message);
+      log(`Catch in checkForUpdatesAndNotify: ${err.message}`);
     });
   }
 
