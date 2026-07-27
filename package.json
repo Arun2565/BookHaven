@@ -42,7 +42,8 @@
     "productName": "BookHaven",
     "publish": [
       {
-        "provider": "github"
+        "provider": "github",
+        "releaseType": "release"
       }
     ],
     "files": [
