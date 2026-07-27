@@ -2,6 +2,10 @@
   "name": "bookhaven",
   "version": "1.0.0",
   "description": "A local, browser-based EPUB reader with bookmarks, highlights, and reading themes.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arun2565/BookHaven.git"
+  },
   "main": "desktop/main.cjs",
   "license": "MIT",
   "keywords": [
