@@ -1,0 +1,30 @@
+diff --git a/node_modules/marks-pane/lib/marks.js b/node_modules/marks-pane/lib/marks.js
+index fab657e..4417f8c 100644
+--- a/node_modules/marks-pane/lib/marks.js
++++ b/node_modules/marks-pane/lib/marks.js
+@@ -266,25 +266,12 @@ var Underline = exports.Underline = function (_Highlight) {
+             for (var i = 0, len = filtered.length; i < len; i++) {
+                 var r = filtered[i];
+ 
+-                var rect = _svg2.default.createElement('rect');
+-                rect.setAttribute('x', r.left - offset.left + container.left);
+-                rect.setAttribute('y', r.top - offset.top + container.top);
+-                rect.setAttribute('height', r.height);
+-                rect.setAttribute('width', r.width);
+-                rect.setAttribute('fill', 'none');
+-
+                 var line = _svg2.default.createElement('line');
+                 line.setAttribute('x1', r.left - offset.left + container.left);
+                 line.setAttribute('x2', r.left - offset.left + container.left + r.width);
+                 line.setAttribute('y1', r.top - offset.top + container.top + r.height - 1);
+                 line.setAttribute('y2', r.top - offset.top + container.top + r.height - 1);
+ 
+-                line.setAttribute('stroke-width', 1);
+-                line.setAttribute('stroke', 'black'); //TODO: match text color?
+-                line.setAttribute('stroke-linecap', 'square');
+-
+-                docFrag.appendChild(rect);
+-
+                 docFrag.appendChild(line);
+             }
+ 

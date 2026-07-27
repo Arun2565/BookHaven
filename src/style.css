@@ -1283,18 +1283,17 @@ input {
   transform: scale(1.1);
 }
 
-.hl-yellow { background-color: #facc15; }
-.hl-green { background-color: #4ade80; }
-.hl-blue { background-color: #60a5fa; }
-.hl-pink { background-color: #f472b6; }
+.hl-yellow { background-color: #fde047; }
+.hl-green { background-color: #86efac; }
+.hl-blue { background-color: #93c5fd; }
+.hl-pink { background-color: #f9a8d4; }
 
-.hl-ul-magenta { background-color: #ec4899; }
-.hl-ul-cyan    { background-color: #06b6d4; }
-.hl-ul-orange  { background-color: #f97316; }
-.hl-ul-lime    { background-color: #84cc16; }
-
-.hl-ul-magenta svg, .hl-ul-cyan svg, .hl-ul-orange svg, .hl-ul-lime svg {
-  color: #fff;
+.hl-underline {
+  background: #fee2e2;
+  color: #ef4444;
+  font-weight: 700;
+  font-size: 1rem;
+  font-family: inherit;
 }
 
 .hl-separator {
@@ -1309,6 +1308,9 @@ input {
 }
 
 .epubjs-hl-underline, g[class*="underline"], line[class*="underline"], path[class*="underline"] {
+  stroke: #ef4444 !important;
+  stroke-width: 2px !important;
+  stroke-opacity: 1.0 !important;
   pointer-events: auto !important;
   cursor: pointer !important;
 }
