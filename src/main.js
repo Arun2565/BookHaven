@@ -10,6 +10,8 @@ const READER_FONT_CSS = [
   ['Fraunces', frauncesFont],
   ['Newsreader', newsreaderFont]
 ].map(([family, url]) => `@font-face { font-family: "${family}"; src: url("${url}") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }`).join('\n') + `
+::selection { background: rgba(99, 102, 241, 0.3) !important; color: inherit !important; }
+::-moz-selection { background: rgba(99, 102, 241, 0.3) !important; color: inherit !important; }
 
 /* Custom styles for annotations inside the EPUB iframe */
 .bookhaven-underline {
@@ -20,19 +22,16 @@ const READER_FONT_CSS = [
   fill-opacity: 0.55 !important;
   rx: 4px !important;
   ry: 4px !important;
-  mix-blend-mode: multiply !important;
+  mix-blend-mode: normal !important;
 }
 
 .theme-dark .bookhaven-highlight {
   fill-opacity: 0.28 !important;
-  mix-blend-mode: screen !important;
 }
 
 .theme-sepia .bookhaven-highlight {
   fill-opacity: 0.4 !important;
-  mix-blend-mode: multiply !important;
-}
-`;
+}`;
 
 // App State
 const state = {

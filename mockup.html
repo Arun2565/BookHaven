@@ -78,6 +78,8 @@
 
     p { font-size: 1.15rem; line-height: 1.8; margin-bottom: 16px; }
 
+    ::selection { background: rgba(99, 102, 241, 0.3); color: inherit; }
+
     /* ── Highlight styles (vivid palette) ── */
     .hl-yellow { background: linear-gradient(to top, rgba(251,247,25,0.55) 0%, rgba(251,247,25,0.55) 100%); border-radius: 4px; padding: 0 2px; }
     .hl-green  { background: linear-gradient(to top, rgba(57,251,25,0.55) 0%, rgba(57,251,25,0.55) 100%); border-radius: 4px; padding: 0 2px; }
@@ -194,6 +196,19 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Selection + Highlight demo -->
+    <div class="mock-card">
+      <h2>Selection + Highlights</h2>
+      <p>
+        <span style="background:rgba(99,102,241,0.3);border-radius:2px;padding:0 1px;">Try selecting this text</span> — the selection uses light blue <code style="font-family:monospace;font-size:0.85rem;background:#e3def5;padding:1px 6px;border-radius:4px;">rgba(99,102,241,0.3)</code>.
+        <span class="hl-yellow">Highlights render in their own vivid colors</span> and <span class="hl-blue">are not affected by the selection color</span>.
+      </p>
+      <p class="font-note" style="margin:0;font-size:0.85rem;">
+        In the app, <code>mix-blend-mode: multiply</code> is removed from highlight SVG fills so the selection blue doesn't bleed through.
+        Highlights use solid <code>fill-opacity: 0.55</code> instead.
+      </p>
     </div>
 
     <!-- In-practice demo -->
