@@ -1218,7 +1218,7 @@ async function addHighlight(color) {
 }
 
 async function addUnderline() {
-  await addAnnotation('underline', '#ef4444');
+  await addAnnotation('underline', '#dc2626');
   showToast('Underline saved');
 }
 
