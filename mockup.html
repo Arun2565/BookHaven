@@ -78,11 +78,11 @@
 
     p { font-size: 1.15rem; line-height: 1.8; margin-bottom: 16px; }
 
-    /* ── Highlight styles (ultra bright palette) ── */
-    .hl-yellow { background: linear-gradient(to top, rgba(202,138,4,0.55) 0%, rgba(202,138,4,0.55) 100%); border-radius: 4px; padding: 0 2px; }
-    .hl-green  { background: linear-gradient(to top, rgba(22,163,74,0.55) 0%, rgba(22,163,74,0.55) 100%); border-radius: 4px; padding: 0 2px; }
-    .hl-blue   { background: linear-gradient(to top, rgba(37,99,235,0.55) 0%, rgba(37,99,235,0.55) 100%); border-radius: 4px; padding: 0 2px; }
-    .hl-pink   { background: linear-gradient(to top, rgba(192,38,211,0.55) 0%, rgba(192,38,211,0.55) 100%); border-radius: 4px; padding: 0 2px; }
+    /* ── Highlight styles (vivid palette) ── */
+    .hl-yellow { background: linear-gradient(to top, rgba(251,247,25,0.55) 0%, rgba(251,247,25,0.55) 100%); border-radius: 4px; padding: 0 2px; }
+    .hl-green  { background: linear-gradient(to top, rgba(57,251,25,0.55) 0%, rgba(57,251,25,0.55) 100%); border-radius: 4px; padding: 0 2px; }
+    .hl-blue   { background: linear-gradient(to top, rgba(25,32,251,0.55) 0%, rgba(25,32,251,0.55) 100%); border-radius: 4px; padding: 0 2px; }
+    .hl-pink   { background: linear-gradient(to top, rgba(251,25,138,0.55) 0%, rgba(251,25,138,0.55) 100%); border-radius: 4px; padding: 0 2px; }
 
     /* ── Underline (thin red line) ── */
     .ul-red { text-decoration: underline; text-decoration-color: #dc2626; text-decoration-thickness: 2px; text-underline-offset: 4px; }
@@ -109,10 +109,10 @@
       font-size: 0.85rem; font-weight: 700;
     }
 
-    .swatch.hl-y-swatch { background: #ca8a04; border: 2px solid #a16207; }
-    .swatch.hl-g-swatch { background: #16a34a; border: 2px solid #15803d; }
-    .swatch.hl-b-swatch { background: #2563eb; border: 2px solid #1d4ed8; }
-    .swatch.hl-p-swatch { background: #c026d3; border: 2px solid #a21caf; }
+    .swatch.hl-y-swatch { background: #FBF719; border: 2px solid #d4d000; }
+    .swatch.hl-g-swatch { background: #39FB19; border: 2px solid #1ad400; }
+    .swatch.hl-b-swatch { background: #1920FB; border: 2px solid #0007d4; }
+    .swatch.hl-p-swatch { background: #FB198A; border: 2px solid #d40070; }
 
     .swatch.ul-swatch { background: #fecaca; color: #dc2626; border: 2px solid #dc2626; }
 
@@ -138,7 +138,7 @@
 <body>
   <div class="container">
     <h1>Highlight & Underline Preview</h1>
-    <p class="subtitle">Darker highlight palette + thin red underline</p>
+    <p class="subtitle">Vivid highlight palette + thin red underline</p>
 
     <div class="font-note">
       <strong>Font:</strong> This mockup uses <strong>Newsreader</strong> (Google Fonts, variable weight).<br />
@@ -167,24 +167,24 @@
 
     <!-- Color Palette -->
     <div class="mock-card">
-      <h2>Color Palette — Bright (before) vs Darker (after)</h2>
+      <h2>Color Palette — Darker (before) vs Vivid (after)</h2>
       <div class="swatches">
         <div class="swatch-group">
           <span class="swatch-group-label">Before (old)</span>
           <div class="swatch-row">
-            <div class="swatch old-color" style="background:#fde047;border:2px solid #eab308"></div>
-            <div class="swatch old-color" style="background:#86efac;border:2px solid #22c55e"></div>
-            <div class="swatch old-color" style="background:#93c5fd;border:2px solid #3b82f6"></div>
-            <div class="swatch old-color" style="background:#f9a8d4;border:2px solid #db2777"></div>
+            <div class="swatch old-color" style="background:#ca8a04;border:2px solid #a16207"></div>
+            <div class="swatch old-color" style="background:#16a34a;border:2px solid #15803d"></div>
+            <div class="swatch old-color" style="background:#2563eb;border:2px solid #1d4ed8"></div>
+            <div class="swatch old-color" style="background:#c026d3;border:2px solid #a21caf"></div>
           </div>
         </div>
         <div class="swatch-group">
           <span class="swatch-group-label">After (brighter)</span>
           <div class="swatch-row">
-            <div class="swatch" style="background:#ca8a04;border:2px solid #a16207"></div>
-            <div class="swatch" style="background:#16a34a;border:2px solid #15803d"></div>
-            <div class="swatch" style="background:#2563eb;border:2px solid #1d4ed8"></div>
-            <div class="swatch" style="background:#c026d3;border:2px solid #a21caf"></div>
+            <div class="swatch" style="background:#FBF719;border:2px solid #d4d000"></div>
+            <div class="swatch" style="background:#39FB19;border:2px solid #1ad400"></div>
+            <div class="swatch" style="background:#1920FB;border:2px solid #0007d4"></div>
+            <div class="swatch" style="background:#FB198A;border:2px solid #d40070"></div>
           </div>
         </div>
         <div class="swatch-group">
@@ -213,7 +213,7 @@
         the <span class="hl-yellow">roses climbing the trellis</span>.
       </p>
       <p>
-        Highlights use a soft highlighter-style fill in four <span class="hl-blue">darker colors</span>. 
+        Highlights use a soft highlighter-style fill in four <span class="hl-blue">vivid colors</span>. 
         Underlines are a <span class="ul-red">thin red line (2px)</span> 
         positioned just below the text baseline — clean and minimal.
       </p>
@@ -228,10 +228,10 @@
           <th style="text-align:left;padding:8px 12px;">Color</th>
           <th style="text-align:left;padding:8px 12px;">Hex</th>
         </tr>
-        <tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px 12px;">Highlight</td><td style="padding:8px 12px;">Yellow</td><td style="padding:8px 12px;font-family:monospace;">#ca8a04</td></tr>
-        <tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px 12px;">Highlight</td><td style="padding:8px 12px;">Green</td><td style="padding:8px 12px;font-family:monospace;">#16a34a</td></tr>
-        <tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px 12px;">Highlight</td><td style="padding:8px 12px;">Blue</td><td style="padding:8px 12px;font-family:monospace;">#2563eb</td></tr>
-        <tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px 12px;">Highlight</td><td style="padding:8px 12px;">Pink</td><td style="padding:8px 12px;font-family:monospace;">#c026d3</td></tr>
+        <tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px 12px;">Highlight</td><td style="padding:8px 12px;">Yellow</td><td style="padding:8px 12px;font-family:monospace;">#FBF719</td></tr>
+        <tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px 12px;">Highlight</td><td style="padding:8px 12px;">Green</td><td style="padding:8px 12px;font-family:monospace;">#39FB19</td></tr>
+        <tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px 12px;">Highlight</td><td style="padding:8px 12px;">Blue</td><td style="padding:8px 12px;font-family:monospace;">#1920FB</td></tr>
+        <tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px 12px;">Highlight</td><td style="padding:8px 12px;">Pink</td><td style="padding:8px 12px;font-family:monospace;">#FB198A</td></tr>
         <tr><td style="padding:8px 12px;">Underline</td><td style="padding:8px 12px;">Red</td><td style="padding:8px 12px;font-family:monospace;">#dc2626</td></tr>
       </table>
     </div>

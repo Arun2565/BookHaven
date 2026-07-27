@@ -1283,10 +1283,10 @@ input {
   transform: scale(1.1);
 }
 
-.hl-yellow { background-color: #ca8a04; }
-.hl-green { background-color: #16a34a; }
-.hl-blue { background-color: #2563eb; }
-.hl-pink { background-color: #c026d3; }
+.hl-yellow { background-color: #FBF719; }
+.hl-green { background-color: #39FB19; }
+.hl-blue { background-color: #1920FB; }
+.hl-pink { background-color: #FB198A; }
 
 .hl-underline {
   background: #fecaca;
