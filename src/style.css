@@ -1239,10 +1239,10 @@ input {
   transform: scale(1.1);
 }
 
-.hl-yellow { background-color: #fde68a; }
-.hl-green { background-color: #86efac; }
-.hl-blue { background-color: #93c5fd; }
-.hl-pink { background-color: #fda4af; }
+.hl-yellow { background-color: #eab308; }
+.hl-green { background-color: #22c55e; }
+.hl-blue { background-color: #3b82f6; }
+.hl-pink { background-color: #db2777; }
 
 .hl-note, .hl-remove {
   background-color: var(--bg-color);
@@ -1250,13 +1250,13 @@ input {
 
 .hl-underline {
   background: #fee2e2;
-  color: #dc2626;
+  color: #ef4444;
 }
 
 .epubjs-hl-underline, g[class*="underline"], line[class*="underline"], path[class*="underline"] {
-  stroke: #dc2626 !important;
+  stroke: #ef4444 !important;
   stroke-width: 3.5px !important;
-  stroke-opacity: 0.95 !important;
+  stroke-opacity: 1.0 !important;
   pointer-events: auto !important;
   cursor: pointer !important;
 }

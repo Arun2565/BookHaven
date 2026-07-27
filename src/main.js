@@ -12,6 +12,16 @@ const READER_FONT_CSS = [
 ].map(([family, url]) => `@font-face { font-family: "${family}"; src: url("${url}") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }`).join('\n') + `
 ::selection { background: rgba(147, 197, 253, 0.55) !important; color: inherit !important; }
 ::-moz-selection { background: rgba(147, 197, 253, 0.55) !important; color: inherit !important; }
+
+/* Custom styles for annotations inside the EPUB iframe */
+.bookhaven-underline {
+  stroke-width: 3.5px !important;
+  stroke-opacity: 1.0 !important;
+}
+
+.bookhaven-highlight {
+  fill-opacity: 0.35 !important;
+}
 `;
 
 // App State
@@ -1179,7 +1189,7 @@ async function addHighlight(color) {
 }
 
 async function addUnderline() {
-  await addAnnotation('underline', '#dc2626');
+  await addAnnotation('underline', '#ef4444');
   showToast('Underline saved');
 }
 
