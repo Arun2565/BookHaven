@@ -15,10 +15,11 @@ const READER_FONT_CSS = [
 
 /* Custom styles for annotations inside the EPUB iframe */
 .bookhaven-underline {
-  stroke-width: 2.5px !important;
-  stroke-opacity: 1.0 !important;
+  stroke-width: 6px !important;
+  stroke-opacity: 0.55 !important;
   stroke-linecap: round !important;
-  transform: translateY(4px) !important; /* Shift line down below text descenders */
+  transform: translateY(5px) !important;
+  paint-order: stroke !important;
 }
 
 .bookhaven-highlight {
@@ -281,8 +282,8 @@ function setupEventListeners() {
         openNoteModal();
       } else if (target.classList.contains('hl-remove')) {
         removeSelectedAnnotations();
-      } else if (target.classList.contains('hl-underline')) {
-        addUnderline();
+      } else if (target.classList.contains('hl-ul-magenta') || target.classList.contains('hl-ul-cyan') || target.classList.contains('hl-ul-orange') || target.classList.contains('hl-ul-lime')) {
+        addUnderline(target.dataset.color);
       } else {
         addHighlight(target.dataset.color);
       }
@@ -1164,7 +1165,7 @@ function drawAnnotation(annotation) {
       annotationData(annotation),
       onClick,
       'bookhaven-underline',
-      { stroke: annotation.color, 'stroke-width': '2.5', 'stroke-opacity': '0.9' }
+      { stroke: annotation.color, 'stroke-width': '6', 'stroke-opacity': '0.55' }
     );
   } else {
     state.rendition.annotations.highlight(
@@ -1220,8 +1221,8 @@ async function addHighlight(color) {
   showToast('Highlight saved');
 }
 
-async function addUnderline() {
-  await addAnnotation('underline', '#ef4444');
+async function addUnderline(color) {
+  await addAnnotation('underline', color);
   showToast('Underline saved');
 }
 
