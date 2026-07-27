@@ -18,18 +18,17 @@ const READER_FONT_CSS = [
   transform: translateY(4px) !important;
 }
 
-.bookhaven-highlight {
-  fill-opacity: 0.55 !important;
+.bookhaven-highlight rect {
   rx: 4px !important;
   ry: 4px !important;
   mix-blend-mode: normal !important;
 }
 
-.theme-dark .bookhaven-highlight {
+.theme-dark .bookhaven-highlight rect {
   fill-opacity: 0.28 !important;
 }
 
-.theme-sepia .bookhaven-highlight {
+.theme-sepia .bookhaven-highlight rect {
   fill-opacity: 0.4 !important;
 }`;
 
@@ -1166,7 +1165,7 @@ function drawAnnotation(annotation) {
       annotationData(annotation),
       onClick,
       'bookhaven-highlight',
-      { fill: annotation.color, 'fill-opacity': annotation.type === 'note' ? '0.42' : '0.52' }
+      { fill: annotation.color, 'fill-opacity': annotation.type === 'note' ? '0.42' : '0.55' }
     );
   }
 }
