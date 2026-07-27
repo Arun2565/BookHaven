@@ -33,7 +33,7 @@
     "preview": "vite preview",
     "desktop": "npm run build && electron .",
     "desktop:dev": "electron . --dev",
-    "desktop:build": "npm run build && electron-builder --win nsis",
+    "desktop:build": "npm run build && electron-builder --win nsis --publish never",
     "prepack": "npm run build",
     "test": "npm run build"
   },
