@@ -695,6 +695,9 @@ async function handleRelocated(location) {
   const currentPage = Math.round(percent * totalPages) || 1;
   els.reader.location.textContent = `Page ${currentPage} / ${totalPages}`;
   
+  // Update bookmark button active status
+  updateBookmarkIconState();
+
   // Save location
   const bookInfo = state.books.find(b => b.title === els.reader.title.textContent);
   if (bookInfo) {
@@ -739,6 +742,18 @@ function renderTOC(items, container, level = 0) {
   });
 }
 
+function updateBookmarkIconState() {
+  if (!els.reader.bookmarkBtn || !state.rendition) return;
+  const location = state.rendition.currentLocation();
+  if (!location || !location.start) {
+    els.reader.bookmarkBtn.classList.remove('active');
+    return;
+  }
+  const cfi = location.start.cfi;
+  const isBookmarked = state.bookmarks.some(b => b.cfi === cfi);
+  els.reader.bookmarkBtn.classList.toggle('active', isBookmarked);
+}
+
 async function toggleBookmark() {
   if (!state.currentBook || !state.rendition || !state.currentBookId) return;
   const location = state.rendition.currentLocation();
@@ -751,10 +766,14 @@ async function toggleBookmark() {
     state.bookmarks.splice(existingIndex, 1);
     await saveBookmarks();
     renderBookmarks();
+    updateBookmarkIconState();
     showToast('Bookmark removed');
   } else {
-    const percent = Math.round((state.currentBook.locations.percentageFromCfi(cfi) || 0) * 100);
-    const totalPages = state.currentBook.locations.total || 1;
+    let percent = 0;
+    if (state.currentBook.locations && state.currentBook.locations.total) {
+      percent = Math.round((state.currentBook.locations.percentageFromCfi(cfi) || 0) * 100);
+    }
+    const totalPages = (state.currentBook.locations && state.currentBook.locations.total) || 1;
     const pageNum = Math.round((percent / 100) * totalPages) || 1;
     
     const bookmark = {
@@ -769,6 +788,7 @@ async function toggleBookmark() {
     state.bookmarks.push(bookmark);
     await saveBookmarks();
     renderBookmarks();
+    updateBookmarkIconState();
     showToast('Bookmark added');
   }
 }
@@ -834,6 +854,7 @@ async function removeBookmark(id) {
   state.bookmarks = state.bookmarks.filter(b => b.id !== id);
   await saveBookmarks();
   renderBookmarks();
+  updateBookmarkIconState();
   showToast('Bookmark removed');
 }
 
