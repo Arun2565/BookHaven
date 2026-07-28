@@ -46,6 +46,8 @@ const state = {
   theme: localStorage.getItem('bookhaven-theme') || 'light',
   fontSize: parseInt(localStorage.getItem('bookhaven-fontsize')) || 100,
   fontFamily: localStorage.getItem('bookhaven-fontfamily') || 'default',
+  bold: localStorage.getItem('bookhaven-bold') === 'true',
+  italic: localStorage.getItem('bookhaven-italic') === 'true',
   lineSpacing: localStorage.getItem('bookhaven-linespacing') || '1.8',
   margin: localStorage.getItem('bookhaven-margin') || 'normal',
   viewMode: 'grid',
@@ -114,7 +116,9 @@ const els = {
     fontOpts: document.querySelectorAll('.font-option'),
     themeOpts: document.querySelectorAll('.theme-btn'),
     spacingOpts: document.querySelectorAll('.spacing-btn'),
-    marginOpts: document.querySelectorAll('.margin-btn')
+    marginOpts: document.querySelectorAll('.margin-btn'),
+    boldBtn: document.getElementById('btn-bold'),
+    italicBtn: document.getElementById('btn-italic')
   },
   modals: {
     loading: document.getElementById('loading-overlay'),
@@ -146,6 +150,7 @@ localforage.config({
 async function init() {
   applyTheme(state.theme);
   setupEventListeners();
+  syncStyleButtons();
   await loadBooks();
 }
 
@@ -269,7 +274,10 @@ function setupEventListeners() {
   els.settings.marginOpts.forEach(btn => {
     btn.addEventListener('click', (e) => changeMargin(e.target.dataset.margin));
   });
-  
+
+  els.settings.boldBtn.addEventListener('click', () => toggleStyle('bold'));
+  els.settings.italicBtn.addEventListener('click', () => toggleStyle('italic'));
+
   // Annotations Events
   els.annotations.btns.forEach(btn => {
     btn.addEventListener('mousedown', (e) => e.preventDefault());
@@ -1030,18 +1038,22 @@ function setupRenditionTheme() {
   const fontFamily = fontMap[state.fontFamily] || fontMap.default;
   
   // Register theme with epub.js
+  const bodyStyles = {
+    'font-family': fontFamily + ' !important',
+    'line-height': state.lineSpacing + ' !important',
+    'color': currentColors.text + ' !important',
+  };
+
   state.rendition.themes.register('custom', {
     'html, body': {
       'background': currentColors.bg + ' !important',
       'color': currentColors.text + ' !important',
       'font-family': fontFamily + ' !important',
       'line-height': state.lineSpacing + ' !important',
+      'font-weight': state.bold ? '700 !important' : '400 !important',
+      'font-style': state.italic ? 'italic !important' : 'normal !important',
     },
-    'body, body *': {
-      'font-family': fontFamily + ' !important',
-      'line-height': state.lineSpacing + ' !important',
-      'color': currentColors.text + ' !important',
-    },
+    'body, body *': bodyStyles,
     'h1, h2, h3, h4, h5, h6': {
       'color': currentColors.text + ' !important',
       'font-family': fontFamily + ' !important',
@@ -1071,6 +1083,8 @@ function setupRenditionTheme() {
       }
     });
   }
+
+  reRenderAnnotations();
 }
 
 // -----------------------------------------------------------------------------
@@ -1093,6 +1107,28 @@ function closeSidebars() {
   els.sidebars.search.classList.remove('open');
   els.sidebars.annotations.classList.remove('open');
   els.sidebars.overlay.classList.remove('show');
+}
+
+function syncStyleButtons() {
+  els.settings.boldBtn.classList.toggle('active', state.bold);
+  els.settings.boldBtn.setAttribute('aria-checked', state.bold);
+  els.settings.italicBtn.classList.toggle('active', state.italic);
+  els.settings.italicBtn.setAttribute('aria-checked', state.italic);
+}
+
+function toggleStyle(style) {
+  state[style] = !state[style];
+  localStorage.setItem(`bookhaven-${style}`, state[style]);
+  syncStyleButtons();
+  setupRenditionTheme();
+}
+
+function reRenderAnnotations() {
+  if (!state.rendition) return;
+  state.annotations.filter(a => a.type === 'underline').forEach(a => {
+    state.rendition.annotations.remove(a.cfiRange, 'underline');
+  });
+  state.annotations.filter(a => a.type === 'underline').forEach(drawAnnotation);
 }
 
 function showLoading(text = 'Loading...') {

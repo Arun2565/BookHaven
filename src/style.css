@@ -1178,6 +1178,48 @@ input {
   font-variant-numeric: tabular-nums;
 }
 
+.style-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.style-btn {
+  flex: 1;
+  height: 44px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background: var(--bg-color);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s;
+  color: var(--text-primary);
+}
+
+.style-btn:hover {
+  border-color: #6366f1;
+}
+
+.style-btn.active {
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.06);
+  color: #6366f1;
+}
+
+.style-label-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.style-btn.active .style-label-text {
+  color: #6366f1;
+}
+
 .font-family-options {
   display: grid;
   grid-template-columns: 1fr 1fr;
