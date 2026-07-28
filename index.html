@@ -5,43 +5,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>BookHaven — Your Personal E-Reader</title>
   <meta name="description" content="A premium e-reader experience with EPUB support, bookmarks, highlights, and customizable reading themes." />
+  <meta name="theme-color" content="#faf9f5" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0e0e11" media="(prefers-color-scheme: dark)" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="BookHaven" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="BookHaven — Your Personal E-Reader" />
+  <meta property="og:description" content="A premium e-reader experience with EPUB support, bookmarks, highlights, and customizable reading themes." />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BookHaven — Your Personal E-Reader" />
+  <meta name="twitter:description" content="A premium e-reader experience with EPUB support, bookmarks, highlights, and customizable reading themes." />
+
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
   <link rel="stylesheet" href="/src/style.css" />
+
+  <!-- Reader fonts for font-family preview in settings -->
+  <link rel="stylesheet" href="/node_modules/@fontsource/newsreader/400.css" />
+  <link rel="stylesheet" href="/node_modules/@fontsource/fraunces/400.css" />
+  <link rel="stylesheet" href="/node_modules/@fontsource/eb-garamond/400.css" />
 </head>
 <body>
+
   <!-- ======================== LIBRARY VIEW ======================== -->
-  <div id="library-view" class="view active">
+  <div id="library-view" class="view active" role="main">
     <header class="library-header">
       <div class="library-header-left">
         <h1 class="app-logo">
-          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
             <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
           </svg>
-          BookHaven <span class="product-badge">Reading room</span>
+          BookHaven
+          <span class="product-badge">Reading room</span>
         </h1>
       </div>
       <div class="library-header-center">
-        <div class="search-bar" id="search-bar">
-          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="search-bar">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
           </svg>
           <input type="text" id="library-search" placeholder="Search by title or author…" autocomplete="off" aria-label="Search your library" />
         </div>
       </div>
       <div class="library-header-right">
-        <button class="header-btn" id="view-toggle-btn" title="Toggle view">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="header-btn" id="view-toggle-btn" title="Toggle view" aria-label="Toggle grid or list view">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
             <rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" />
           </svg>
         </button>
-        <button class="header-btn" id="sort-btn" title="Sort books">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="header-btn" id="sort-btn" title="Sort books" aria-label="Sort books">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M3 6h18M3 12h12M3 18h6" />
           </svg>
         </button>
         <label class="import-btn" id="import-btn" title="Add books">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M12 5v14m-7-7h14" />
           </svg>
           <span>Add Book</span>
@@ -51,10 +75,10 @@
     </header>
 
     <!-- Sort Dropdown -->
-    <div class="sort-dropdown" id="sort-dropdown">
-      <button class="sort-option active" data-sort="recent">Recent</button>
-      <button class="sort-option" data-sort="title">Title</button>
-      <button class="sort-option" data-sort="author">Author</button>
+    <div class="sort-dropdown" id="sort-dropdown" role="menu" aria-label="Sort options">
+      <button class="sort-option active" data-sort="recent" role="menuitem">Recent</button>
+      <button class="sort-option" data-sort="title" role="menuitem">Title</button>
+      <button class="sort-option" data-sort="author" role="menuitem">Author</button>
     </div>
 
     <!-- Library Content -->
@@ -70,10 +94,11 @@
           <span>EPUB library</span>
         </div>
       </section>
+
       <!-- Empty State -->
       <div class="empty-state" id="empty-state">
         <div class="empty-illustration">
-          <svg viewBox="0 0 120 120" fill="none">
+          <svg viewBox="0 0 120 120" fill="none" aria-hidden="true">
             <rect x="20" y="30" width="25" height="60" rx="3" fill="url(#book1)" />
             <rect x="48" y="25" width="25" height="65" rx="3" fill="url(#book2)" />
             <rect x="76" y="35" width="25" height="55" rx="3" fill="url(#book3)" />
@@ -93,7 +118,7 @@
         <h2>Your reading room is ready.</h2>
         <p>Drop EPUB files here or add one from your device. Nothing is uploaded.</p>
         <label class="empty-add-btn" for="file-input">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M12 5v14m-7-7h14" />
           </svg>
           Add Your First Book
@@ -101,13 +126,13 @@
       </div>
 
       <!-- Book Grid / List -->
-      <div class="book-grid" id="book-grid"></div>
+      <div class="book-grid" id="book-grid" role="list" aria-label="Book collection"></div>
     </main>
 
     <!-- Drop Overlay -->
-    <div class="drop-overlay" id="drop-overlay">
+    <div class="drop-overlay" id="drop-overlay" aria-hidden="true">
       <div class="drop-content">
-        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <rect x="12" y="8" width="40" height="48" rx="4" />
           <path d="M32 24v16m-8-8h16" />
         </svg>
@@ -117,58 +142,55 @@
   </div>
 
   <!-- ======================== READER VIEW ======================== -->
-  <div id="reader-view" class="view">
+  <div id="reader-view" class="view" role="application" aria-label="Book reader">
     <!-- Reader Top Bar -->
     <header class="reader-header" id="reader-header">
       <div class="reader-left-controls">
-        <button class="reader-btn" id="reader-back-btn" title="Back to Library">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="reader-btn" id="reader-back-btn" title="Back to Library" aria-label="Back to library">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M19 12H5m7-7-7 7 7 7" />
           </svg>
         </button>
-        <button class="reader-btn" id="reader-toc-btn" title="Table of Contents">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="reader-btn" id="reader-toc-btn" title="Table of Contents" aria-label="Open table of contents">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
       </div>
       <div class="reader-title" id="reader-book-title"></div>
       <div class="reader-controls">
-        <button class="reader-btn" id="reader-bookmark-btn" title="Bookmark this page">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="reader-btn" id="reader-bookmark-btn" title="Bookmark this page" aria-label="Toggle bookmark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
           </svg>
         </button>
-        <button class="reader-btn" id="reader-search-btn" title="Search in book">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="reader-btn" id="reader-search-btn" title="Search in book" aria-label="Search in book">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
           </svg>
         </button>
         <button class="reader-btn" id="reader-annotations-btn" title="Annotations" aria-label="Open annotations">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M4 19.5V4a2 2 0 012-2h9l5 5v12.5a2 2 0 01-2 2H6a2 2 0 01-2-2z" />
             <path d="M14 2v6h6M8 15h8M8 18h5" />
           </svg>
         </button>
-        <button class="reader-btn" id="reader-settings-btn" title="Reading Settings">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3" />
-            <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-          </svg>
+        <button class="reader-btn" id="reader-settings-btn" title="Reading Settings" aria-label="Open reading settings">
+          <span class="settings-icon">Aa</span>
         </button>
       </div>
     </header>
 
     <!-- Reader Body -->
     <div class="reader-body" id="reader-body">
-      <button class="page-nav-btn page-prev" id="page-prev" title="Previous page">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="page-nav-btn page-prev" id="page-prev" title="Previous page" aria-label="Previous page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M15 18l-6-6 6-6" />
         </svg>
       </button>
       <div class="reader-area" id="reader-area"></div>
-      <button class="page-nav-btn page-next" id="page-next" title="Next page">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="page-nav-btn page-next" id="page-next" title="Next page" aria-label="Next page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M9 18l6-6-6-6" />
         </svg>
       </button>
@@ -178,17 +200,17 @@
     <footer class="reader-footer" id="reader-footer">
       <span class="reader-location" id="reader-location">Page 1</span>
       <div class="progress-container">
-        <input type="range" id="reader-progress" class="progress-slider" min="0" max="100" value="0" step="0.1" />
+        <input type="range" id="reader-progress" class="progress-slider" min="0" max="100" value="0" step="0.1" aria-label="Reading progress" />
       </div>
       <span class="reader-percent" id="reader-percent">0%</span>
     </footer>
 
     <!-- TOC Sidebar -->
-    <aside class="sidebar toc-sidebar" id="toc-sidebar">
+    <aside class="sidebar toc-sidebar" id="toc-sidebar" aria-label="Table of contents">
       <div class="sidebar-header">
         <h3>Table of Contents</h3>
-        <button class="sidebar-close" id="toc-close">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="sidebar-close" id="toc-close" aria-label="Close table of contents">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </button>
@@ -197,11 +219,11 @@
     </aside>
 
     <!-- Bookmarks Sidebar -->
-    <aside class="sidebar bookmarks-sidebar" id="bookmarks-sidebar">
+    <aside class="sidebar bookmarks-sidebar" id="bookmarks-sidebar" aria-label="Bookmarks">
       <div class="sidebar-header">
         <h3>Bookmarks</h3>
-        <button class="sidebar-close" id="bookmarks-close">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="sidebar-close" id="bookmarks-close" aria-label="Close bookmarks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </button>
@@ -212,19 +234,19 @@
     </aside>
 
     <!-- Search Sidebar -->
-    <aside class="sidebar search-sidebar" id="search-sidebar">
+    <aside class="sidebar search-sidebar" id="search-sidebar" aria-label="Search in book">
       <div class="sidebar-header">
         <h3>Search</h3>
-        <button class="sidebar-close" id="search-close">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="sidebar-close" id="search-close" aria-label="Close search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </button>
       </div>
       <div class="search-input-wrapper">
-        <input type="text" id="book-search-input" placeholder="Search in this book..." />
-        <button class="search-go" id="book-search-go">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <input type="text" id="book-search-input" placeholder="Search in this book…" aria-label="Search query" />
+        <button class="search-go" id="book-search-go" aria-label="Execute search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
           </svg>
         </button>
@@ -235,14 +257,14 @@
     </aside>
 
     <!-- Annotations Sidebar -->
-    <aside class="sidebar annotations-sidebar" id="annotations-sidebar">
+    <aside class="sidebar annotations-sidebar" id="annotations-sidebar" aria-label="Annotations">
       <div class="sidebar-header">
         <div>
           <h3>Annotations</h3>
           <p class="sidebar-subtitle">Highlights, underlines, and notes</p>
         </div>
         <button class="sidebar-close" id="annotations-close" aria-label="Close annotations">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </button>
@@ -253,94 +275,99 @@
     </aside>
 
     <!-- Settings Panel -->
-    <div class="settings-panel" id="settings-panel">
+    <div class="settings-panel" id="settings-panel" role="dialog" aria-label="Reading settings" aria-modal="true">
       <div class="settings-section">
-        <label class="settings-label">Font Size</label>
-        <div class="font-size-controls">
-          <button class="font-size-btn" id="font-decrease">A−</button>
-          <span class="font-size-value" id="font-size-value">100%</span>
-          <button class="font-size-btn" id="font-increase">A+</button>
+        <label class="settings-label" id="font-size-label">Font Size</label>
+        <div class="font-size-controls" role="group" aria-labelledby="font-size-label">
+          <button class="font-size-btn" id="font-decrease" aria-label="Decrease font size">A−</button>
+          <span class="font-size-value" id="font-size-value" aria-live="polite">100%</span>
+          <button class="font-size-btn" id="font-increase" aria-label="Increase font size">A+</button>
         </div>
       </div>
       <div class="settings-section">
-        <label class="settings-label">Font Family</label>
-        <div class="font-family-options" id="font-family-options">
-          <button class="font-option active" data-font="default" style="font-family: 'Newsreader', serif">Newsreader</button>
-          <button class="font-option" data-font="fraunces" style="font-family: 'Fraunces', serif">Fraunces</button>
-          <button class="font-option" data-font="ebgaramond" style="font-family: 'EB Garamond', serif">EB Garamond</button>
+        <label class="settings-label" id="font-family-label">Font Family</label>
+        <div class="font-family-options" role="radiogroup" aria-labelledby="font-family-label">
+          <button class="font-option active" data-font="default" style="font-family: 'Newsreader', serif" role="radio" aria-checked="true">Newsreader</button>
+          <button class="font-option" data-font="fraunces" style="font-family: 'Fraunces', serif" role="radio" aria-checked="false">Fraunces</button>
+          <button class="font-option" data-font="ebgaramond" style="font-family: 'EB Garamond', serif" role="radio" aria-checked="false">EB Garamond</button>
         </div>
       </div>
       <div class="settings-section">
-        <label class="settings-label">Theme</label>
-        <div class="theme-options" id="theme-options">
-          <button class="theme-btn theme-light active" data-theme="light" title="Light">
-            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5" /><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" fill="none" stroke-width="2" /></svg>
+        <label class="settings-label" id="theme-label">Theme</label>
+        <div class="theme-options" role="radiogroup" aria-labelledby="theme-label">
+          <button class="theme-btn theme-light active" data-theme="light" title="Light" role="radio" aria-checked="true" aria-label="Light theme">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <circle cx="12" cy="12" r="5" />
+              <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" fill="none" stroke-width="2" />
+            </svg>
           </button>
-          <button class="theme-btn theme-sepia" data-theme="sepia" title="Sepia">
+          <button class="theme-btn theme-sepia" data-theme="sepia" title="Sepia" role="radio" aria-checked="false" aria-label="Sepia theme">
             <div class="theme-preview sepia-preview"></div>
           </button>
-          <button class="theme-btn theme-dark" data-theme="dark" title="Dark">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>
+          <button class="theme-btn theme-dark" data-theme="dark" title="Dark" role="radio" aria-checked="false" aria-label="Dark theme">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
           </button>
         </div>
       </div>
       <div class="settings-section">
-        <label class="settings-label">Line Spacing</label>
-        <div class="spacing-controls">
-          <button class="spacing-btn" data-spacing="1.4">Tight</button>
-          <button class="spacing-btn active" data-spacing="1.8">Normal</button>
-          <button class="spacing-btn" data-spacing="2.2">Wide</button>
+        <label class="settings-label" id="spacing-label">Line Spacing</label>
+        <div class="spacing-controls" role="radiogroup" aria-labelledby="spacing-label">
+          <button class="spacing-btn" data-spacing="1.4" role="radio" aria-checked="false">Tight</button>
+          <button class="spacing-btn active" data-spacing="1.8" role="radio" aria-checked="true">Normal</button>
+          <button class="spacing-btn" data-spacing="2.2" role="radio" aria-checked="false">Wide</button>
         </div>
       </div>
       <div class="settings-section">
-        <label class="settings-label">Margins</label>
-        <div class="margin-controls">
-          <button class="margin-btn" data-margin="narrow">Narrow</button>
-          <button class="margin-btn active" data-margin="normal">Normal</button>
-          <button class="margin-btn" data-margin="wide">Wide</button>
+        <label class="settings-label" id="margin-label">Margins</label>
+        <div class="margin-controls" role="radiogroup" aria-labelledby="margin-label">
+          <button class="margin-btn" data-margin="narrow" role="radio" aria-checked="false">Narrow</button>
+          <button class="margin-btn active" data-margin="normal" role="radio" aria-checked="true">Normal</button>
+          <button class="margin-btn" data-margin="wide" role="radio" aria-checked="false">Wide</button>
         </div>
       </div>
     </div>
 
     <!-- Highlight/Annotation Toolbar -->
-    <div class="highlight-toolbar" id="highlight-toolbar">
-      <button class="hl-btn hl-yellow" data-color="#FBF719" title="Highlight Yellow"></button>
-      <button class="hl-btn hl-green" data-color="#39FB19" title="Highlight Green"></button>
-      <button class="hl-btn hl-blue" data-color="#1920FB" title="Highlight Blue"></button>
-      <button class="hl-btn hl-pink" data-color="#FB198A" title="Highlight Pink"></button>
-      <span class="hl-separator"></span>
+    <div class="highlight-toolbar" id="highlight-toolbar" role="toolbar" aria-label="Annotation tools">
+      <button class="hl-btn hl-yellow" data-color="#FBF719" title="Highlight Yellow" aria-label="Highlight yellow"></button>
+      <button class="hl-btn hl-green" data-color="#39FB19" title="Highlight Green" aria-label="Highlight green"></button>
+      <button class="hl-btn hl-blue" data-color="#1920FB" title="Highlight Blue" aria-label="Highlight blue"></button>
+      <button class="hl-btn hl-pink" data-color="#FB198A" title="Highlight Pink" aria-label="Highlight pink"></button>
+      <span class="hl-separator" role="separator"></span>
       <button class="hl-btn hl-underline" title="Underline" aria-label="Underline">U</button>
-      <button class="hl-btn hl-note" title="Add Note">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="hl-btn hl-note" title="Add Note" aria-label="Add note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
           <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
         </svg>
       </button>
-      <button class="hl-btn hl-remove" title="Remove Highlight">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="hl-btn hl-remove" title="Remove Highlight" aria-label="Remove highlight">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M18 6L6 18M6 6l12 12" />
         </svg>
       </button>
     </div>
 
     <!-- Sidebar Overlay -->
-    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
   </div>
 
   <!-- ======================== NOTES MODAL ======================== -->
-  <div class="modal-overlay" id="note-modal">
+  <div class="modal-overlay" id="note-modal" role="dialog" aria-modal="true" aria-labelledby="note-modal-title">
     <div class="modal">
       <div class="modal-header">
-        <h3>Add a Note</h3>
-        <button class="modal-close" id="note-modal-close">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <h3 id="note-modal-title">Add a Note</h3>
+        <button class="modal-close" id="note-modal-close" aria-label="Cancel note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </button>
       </div>
       <div class="modal-body">
         <p class="note-excerpt" id="note-excerpt"></p>
-        <textarea id="note-text" placeholder="Write your note here..." rows="4"></textarea>
+        <textarea id="note-text" placeholder="Write your note here…" rows="4" aria-label="Note text"></textarea>
       </div>
       <div class="modal-footer">
         <button class="modal-btn cancel" id="note-cancel">Cancel</button>
@@ -350,10 +377,10 @@
   </div>
 
   <!-- ======================== BOOK INFO MODAL ======================== -->
-  <div class="modal-overlay" id="book-info-modal">
+  <div class="modal-overlay" id="book-info-modal" role="dialog" aria-modal="true" aria-label="Book information">
     <div class="modal book-info-modal-content">
-      <button class="modal-close" id="book-info-close">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="modal-close" id="book-info-close" aria-label="Close book information">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M18 6L6 18M6 6l12 12" />
         </svg>
       </button>
@@ -362,10 +389,10 @@
   </div>
 
   <!-- ======================== LOADING ======================== -->
-  <div class="loading-overlay" id="loading-overlay">
+  <div class="loading-overlay" id="loading-overlay" role="alert" aria-live="assertive">
     <div class="loading-spinner">
       <div class="spinner-ring"></div>
-      <p class="loading-text" id="loading-text">Loading...</p>
+      <p class="loading-text" id="loading-text">Loading…</p>
     </div>
   </div>
 

@@ -649,6 +649,13 @@ input {
   height: 22px;
 }
 
+.settings-icon {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
 .reader-title {
   font-size: 1rem;
   font-weight: 500;
