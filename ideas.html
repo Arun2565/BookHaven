@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookHaven UX Ideas Mockup</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Fraunces:wght@400;500;600&family=Newsreader:wght@400;500&display=swap');
+    :root {
+      --bg-color: #FAF9F5; --surface-color: #FFFFFF; --surface-color-rgb: 255, 255, 255;
+      --text-primary: #121316; --text-secondary: #5E636E; --border-color: rgba(18, 19, 22, 0.08);
+      --accent-color: #6366f1; --accent-hover: #4f46e5; --accent-rgb: 99, 102, 241;
+      --shadow-sm: 0 2px 8px rgba(18, 19, 22, 0.03); --shadow-md: 0 8px 24px rgba(18, 19, 22, 0.06);
+      --shadow-lg: 0 16px 40px rgba(18, 19, 22, 0.1); --radius-sm: 8px; --radius-md: 14px; --radius-lg: 24px;
+      --transition-smooth: all 0.25s ease; --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+      --font-ui: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-reader: 'Newsreader', Georgia, serif; --font-display: 'Fraunces', Georgia, serif;
+    }
+    [data-theme="dark"] {
+      --bg-color: #0E0E11; --surface-color: #17171C; --surface-color-rgb: 23, 23, 28;
+      --text-primary: #F3F4F6; --text-secondary: #9CA3AF; --border-color: rgba(243, 244, 246, 0.08);
+      --accent-color: #818cf8; --accent-hover: #6366f1; --accent-rgb: 129, 140, 248;
+    }
+    [data-theme="sepia"] {
+      --bg-color: #F5EEDC; --surface-color: #FCF7EB; --surface-color-rgb: 252, 247, 235;
+      --text-primary: #3B2A18; --text-secondary: #6B553E; --border-color: rgba(59, 42, 24, 0.1);
+      --accent-color: #C07A43; --accent-hover: #A56432; --accent-rgb: 192, 122, 67;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-ui); background-color: var(--bg-color); color: var(--text-primary); line-height: 1.5; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    .page { max-width: 1400px; margin: 0 auto; padding: 40px 32px; }
+    .page-title { font-family: var(--font-display); font-size: 2.5rem; font-weight: 550; letter-spacing: -0.04em; margin-bottom: 8px; }
+    .page-subtitle { color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 40px; max-width: 700px; }
+    .section { margin-bottom: 60px; padding: 32px; background-color: var(--surface-color); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); }
+    .section-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+    .section-desc { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 24px; }
+    .theme-toggle { display: flex; gap: 8px; margin-bottom: 24px; }
+    .theme-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--bg-color); font-size: 0.85rem; cursor: pointer; transition: var(--transition-smooth); }
+    .theme-btn:hover { background: var(--surface-color); }
+    .theme-btn.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+    .library-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background-color: rgba(var(--surface-color-rgb), 0.8); backdrop-filter: blur(20px) saturate(120%); border-bottom: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 24px; }
+    .app-logo { font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .logo-icon { width: 24px; height: 24px; color: var(--accent-color); }
+    .search-bar { position: relative; flex: 1; max-width: 360px; margin: 0 24px; }
+    .search-bar input { width: 100%; padding: 10px 16px 10px 40px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background-color: var(--surface-color); color: var(--text-primary); transition: var(--transition-smooth); }
+    .search-bar input:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15); }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-secondary); }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .header-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; color: var(--text-secondary); transition: all 0.2s; }
+    .header-btn:hover { background-color: rgba(0, 0, 0, 0.05); color: var(--text-primary); }
+    [data-theme="dark"] .header-btn:hover { background-color: rgba(255, 255, 255, 0.1); }
+    .import-btn { display: inline-flex; align-items: center; gap: 8px; background-color: var(--accent-color); color: white; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background-color 0.2s; }
+    .import-btn:hover { background-color: var(--accent-hover); }
+    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 28px; }
+    .book-card { display: flex; flex-direction: column; gap: 10px; cursor: pointer; position: relative; transition: var(--transition-spring); }
+    .book-card:hover { transform: translateY(-4px); }
+    .book-cover-wrapper { position: relative; width: 100%; aspect-ratio: 2 / 3; border-radius: 13px; box-shadow: 0 14px 24px rgba(34, 38, 51, 0.16); overflow: hidden; background-color: var(--surface-color); display: flex; align-items: center; justify-content: center; transition: var(--transition-spring); }
+    .book-card:hover .book-cover-wrapper { box-shadow: 0 20px 32px rgba(34, 38, 51, 0.22); }
+    .book-cover { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .book-card:hover .book-cover { transform: scale(1.04); }
+    .book-progress-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background-color: rgba(0, 0, 0, 0.08); }
+    .book-progress-fill { height: 100%; background-color: var(--accent-color); border-radius: 0 0 4px 4px; transition: width 0.3s ease; }
+    .continue-badge { position: absolute; top: 8px; left: 8px; background: rgba(99, 102, 241, 0.9); color: white; font-size: 0.65rem; font-weight: 600; padding: 3px 8px; border-radius: 10px; backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.2s; z-index: 2; }
+    .book-card:hover .continue-badge { opacity: 1; }
+    .book-actions { position: absolute; top: 8px; right: 8px; opacity: 0; transition: opacity 0.2s; display: flex; gap: 4px; }
+    .book-card:hover .book-actions { opacity: 1; }
+    .book-action-btn { width: 28px; height: 28px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.9); color: #333; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s; }
+    .book-action-btn:hover { background-color: white; transform: scale(1.1); }
+    .book-info { display: flex; flex-direction: column; gap: 4px; }
+    .book-title { font-size: 1rem; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .book-author { font-size: 0.85rem; color: var(--text-secondary); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+    .book-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-secondary); }
+    .book-last-read { font-style: italic; }
+    .context-menu { position: fixed; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); padding: 6px; min-width: 180px; z-index: 1000; display: none; }
+    .context-menu.show { display: block; }
+    .context-menu-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; transition: var(--transition-smooth); }
+    .context-menu-item:hover { background-color: rgba(99, 102, 241, 0.08); color: var(--accent-color); }
+    .context-menu-item.danger:hover { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    .context-menu-item svg { width: 16px; height: 16px; }
+    .context-menu-separator { height: 1px; background: var(--border-color); margin: 4px 0; }
+    .view { position: absolute; top: 0; left: 0; width: 100%; opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s ease; transform: translateX(20px); }
+    .view.active { opacity: 1; pointer-events: auto; transform: translateX(0); }
+    .view.exit { opacity: 0; pointer-events: none; transform: translateX(-20px); }
+    .reader-header { position: relative; width: 100%; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; background-color: rgba(var(--surface-color-rgb), 0.8); backdrop-filter: blur(20px) saturate(120%); border-bottom: 1px solid var(--border-color); z-index: 30; flex-shrink: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+    .reader-header:not(.show) { opacity: 0; transform: translateY(-100%); pointer-events: none; }
+    .reader-btn { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: background-color 0.2s; }
+    .reader-btn:hover { background-color: rgba(128, 128, 128, 0.1); }
+    .reader-btn svg { width: 22px; height: 22px; }
+    .reader-title { font-size: 1rem; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40%; text-align: center; }
+    .reader-footer { width: 100%; padding: 12px 40px; display: flex; align-items: center; justify-content: center; gap: 24px; background-color: var(--surface-color); z-index: 30; border-top: 1px solid var(--border-color); flex-shrink: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+    .reader-footer:not(.show) { opacity: 0; transform: translateY(100%); pointer-events: none; }
+    .reader-location, .reader-percent { font-size: 0.85rem; color: var(--text-secondary); min-width: 60px; text-align: center; font-variant-numeric: tabular-nums; }
+    .progress-container { flex: 1; max-width: 600px; }
+    .progress-slider { width: 100%; -webkit-appearance: none; background: transparent; outline: none; height: 24px; cursor: pointer; }
+    .progress-slider::-webkit-slider-runnable-track { width: 100%; height: 4px; background: rgba(128, 128, 128, 0.2); border-radius: 2px; }
+    .progress-slider::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--text-primary); margin-top: -6px; box-shadow: var(--shadow-sm); }
+    .reader-body { flex: 1; display: flex; position: relative; min-height: 0; width: 100%; overflow: hidden; }
+    .reader-area { flex: 1; height: 100%; width: 100%; padding: 0 40px; overflow-y: auto; font-family: var(--font-reader); font-size: 1.1rem; line-height: 1.8; color: #333; background: white; }
+    .page-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); opacity: 0.3; transition: opacity 0.2s; z-index: 20; border-radius: 50%; background: rgba(255, 255, 255, 0.8); box-shadow: var(--shadow-sm); }
+    .page-nav-btn:hover { opacity: 1 !important; background: white; box-shadow: var(--shadow-md); }
+    .page-prev { left: 16px; } .page-next { right: 16px; }
+    .page-nav-btn svg { width: 32px; height: 32px; }
+    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 400px; text-align: center; border: 2px dashed var(--border-color); border-radius: var(--radius-lg); padding: 40px; }
+    .empty-state h2 { font-family: var(--font-display); font-size: 1.9rem; font-weight: 550; margin-bottom: 8px; }
+    .empty-state p { color: var(--text-secondary); margin-bottom: 24px; }
+    .empty-add-btn { display: inline-flex; align-items: center; gap: 8px; background-color: var(--surface-color); color: var(--text-primary); border: 1px solid var(--border-color); padding: 12px 24px; border-radius: 24px; font-weight: 500; cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.2s; }
+    .empty-add-btn:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .toast-container { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+    .toast { background-color: rgba(28, 28, 30, 0.9); color: white; padding: 12px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); display: flex; align-items: center; gap: 8px; animation: slideUp 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+    [data-theme="dark"] .toast { background-color: rgba(255, 255, 255, 0.9); color: #1c1c1e; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .toast.fade-out { opacity: 0; transform: translateY(-10px) scale(0.9); transition: all 0.3s; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+    .modal-overlay.show { opacity: 1; pointer-events: auto; }
+    .modal { background-color: var(--surface-color); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width: 90%; max-width: 400px; transform: translateY(20px) scale(0.95); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); overflow: hidden; }
+    .modal-overlay.show .modal { transform: translateY(0) scale(1); }
+    .modal-header { padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+    .modal-header h3 { font-size: 1.2rem; font-weight: 600; }
+    .modal-close { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; }
+    .modal-close:hover { background-color: var(--bg-color); color: var(--text-primary); }
+    .modal-body { padding: 24px; }
+    .modal-body p { color: var(--text-secondary); margin-bottom: 16px; }
+    .modal-footer { padding: 16px 24px; display: flex; justify-content: flex-end; gap: 12px; background-color: var(--bg-color); border-top: 1px solid var(--border-color); }
+    .modal-btn { padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 500; transition: all 0.2s; cursor: pointer; }
+    .modal-btn.cancel { background-color: transparent; color: var(--text-primary); border: 1px solid var(--border-color); }
+    .modal-btn.cancel:hover { background-color: rgba(0, 0, 0, 0.05); }
+    .modal-btn.confirm { background-color: #ef4444; color: white; border: none; }
+    .modal-btn.confirm:hover { background-color: #d70015; }
+    pre { background: rgba(18, 19, 22, 0.04); border-radius: var(--radius-sm); padding: 16px; overflow-x: auto; margin: 12px 0; border: 1px solid var(--border-color); }
+    pre code { font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.85rem; line-height: 1.5; }
+    .highlight { background: rgba(99, 102, 241, 0.1); padding: 1px 4px; border-radius: 3px; }
+    .idea-label { display: inline-block; background: var(--accent-color); color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-right: 8px; margin-bottom: 4px; }
+    @media (max-width: 700px) { .library-header { flex-wrap: wrap; gap: 12px; } .search-bar { order: 3; width: 100%; } .header-right { gap: 6px; } .book-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1 class="page-title">BookHaven UX Ideas Mockup</h1>
+    <p class="page-subtitle">A visual showcase of proposed improvements to the BookHaven e-reader. Hover over book cards to see progress bars and context menus.</p>
+    <div class="theme-toggle">
+      <button class="theme-btn active" data-theme="light">Light</button>
+      <button class="theme-btn" data-theme="dark">Dark</button>
+      <button class="theme-btn" data-theme="sepia">Sepia</button>
+    </div>
+    <div class="section">
+      <h2 class="section-title">1. Library — Reading Progress & Context Menu</h2>
+      <p class="section-desc"><span class="idea-label">IDEA 1</span>Book cards now show a progress bar at the bottom and a "Continue Reading" badge on hover. Right-click to open a context menu with Read, Info, and Delete actions.</p>
+      <div class="library-header">
+        <div class="app-logo"><svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>BookHaven</div>
+        <div class="search-bar"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg><input type="text" placeholder="Search by title or author..." /></div>
+        <div class="header-right">
+          <button class="header-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg></button>
+          <button class="header-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h12M3 18h6" /></svg></button>
+          <label class="import-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14" /></svg>Add Book</label>
+        </div>
+      </div>
+      <div class="book-grid" id="book-grid-demo"></div>
+    </div>
+    <div class="section">
+      <h2 class="section-title">2. View Transitions (Library to Reader)</h2>
+      <p class="section-desc"><span class="idea-label">IDEA 2</span>Instead of an instant opacity swap, the library slides left and fades out while the reader slides in from the right.</p>
+      <div style="display: flex; gap: 16px; margin-top: 20px;">
+        <button id="show-library-btn" class="modal-btn cancel">Show Library</button>
+        <button id="show-reader-btn" class="modal-btn confirm">Show Reader</button>
+      </div>
+      <div style="margin-top: 24px; height: 500px; position: relative; border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden;">
+        <div class="view active" id="library-view-demo">
+          <div class="library-header"><div class="app-logo"><svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>BookHaven</div></div>
+          <div style="padding: 24px;"><h3 style="margin-bottom: 16px;">Your Library</h3><div class="book-grid" id="transition-book-grid"></div></div>
+        </div>
+        <div class="view" id="reader-view-demo">
+          <div class="reader-header"><button class="reader-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7" /></svg></button><div class="reader-title">The Great Gatsby</div><div class="reader-controls"><button class="reader-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" /></svg></button><button class="reader-btn" style="font-size:15px;font-weight:700;">Aa</button></div></div>
+          <div class="reader-body"><button class="page-nav-btn page-prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" /></svg></button><div class="reader-area"><p>In his blue gardens men and girls came and went like moths among the whispering reeds.</p><p>So we beat on, boats against the current, borne back ceaselessly into the past.</p></div><button class="page-nav-btn page-next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6" /></svg></button></div>
+          <div class="reader-footer"><span class="reader-location">Page 12 / 180</span><div class="progress-container"><input type="range" class="progress-slider" min="0" max="100" value="7" step="0.1"></div><span class="reader-percent">7%</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h2 class="section-title">3. Reader — Auto-Hide Toolbar</h2>
+      <p class="section-desc"><span class="idea-label">IDEA 3</span>The reader header and footer auto-hide after 3 seconds of inactivity. Move your mouse to bring them back. Uses smooth CSS transitions.</p>
+      <div style="margin-top:20px;height:400px;position:relative;border:1px solid var(--border-color);border-radius:var(--radius-md);overflow:hidden;background:white;">
+        <div class="reader-header show" id="demo-header"><button class="reader-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7" /></svg></button><div class="reader-title">Fahrenheit 451</div><div class="reader-controls"><button class="reader-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" /></svg></button><button class="reader-btn" style="font-size:15px;font-weight:700;">Aa</button></div></div>
+        <div class="reader-body"><button class="page-nav-btn page-prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" /></svg></button><div class="reader-area"><p style="max-width:600px;margin:0 auto;padding:40px 20px;">It was a pleasure to burn. Move your mouse in this area to toggle the toolbar. It will auto-hide after 3 seconds.</p></div><button class="page-nav-btn page-next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6" /></svg></button></div>
+        <div class="reader-footer show" id="demo-footer"><span class="reader-location">Page 45 / 220</span><div class="progress-container"><input type="range" class="progress-slider" min="0" max="100" value="20" step="0.1"></div><span class="reader-percent">20%</span></div>
+      </div>
+    </div>
+    <div class="section">
+      <h2 class="section-title">4. Context Menu (Right-Click on Book)</h2>
+      <p class="section-desc"><span class="idea-label">IDEA 4</span>Right-click any book card to open a styled context menu with Read, Book Info, and Delete actions. Includes a confirmation dialog for destructive actions.</p>
+      <div style="margin-top:20px;display:flex;justify-content:center;">
+        <div class="book-cover-wrapper" style="width:155px;" id="context-menu-trigger">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 150'%3E%3Crect width='100' height='150' fill='%23667eea'/%3E%3Ctext x='50' y='80' fill='white' font-size='14' text-anchor='middle'%3EThe Alchemist%3C/text%3E%3C/svg%3E" class="book-cover" alt="Book cover">
+        </div>
+      </div>
+      <p style="margin-top:12px;font-size:0.85rem;color:var(--text-secondary);">Right-click the book cover above to see the context menu.</p>
+    </div>
+    <div class="section">
+      <h2 class="section-title">5. Empty State with Illustration</h2>
+      <p class="section-desc"><span class="idea-label">IDEA 5</span>When the library is empty, show a friendly illustration with a clear call-to-action.</p>
+      <div class="empty-state">
+        <svg viewBox="0 0 120 120" fill="none" style="width:120px;height:120px;margin-bottom:24px;"><rect x="20" y="30" width="25" height="60" rx="3" fill="url(#book1)"/><rect x="48" y="25" width="25" height="65" rx="3" fill="url(#book2)"/><rect x="76" y="35" width="25" height="55" rx="3" fill="url(#book3)"/><defs><linearGradient id="book1" x1="20" y1="30" x2="45" y2="90" gradientUnits="userSpaceOnUse"><stop stop-color="#667eea"/><stop offset="1" stop-color="#764ba2"/></linearGradient><linearGradient id="book2" x1="48" y1="25" x2="73" y2="90" gradientUnits="userSpaceOnUse"><stop stop-color="#f093fb"/><stop offset="1" stop-color="#f5576c"/></linearGradient><linearGradient id="book3" x1="76" y1="35" x2="101" y2="90" gradientUnits="userSpaceOnUse"><stop stop-color="#4facfe"/><stop offset="1" stop-color="#00f2fe"/></linearGradient></defs></svg>
+        <h2>Your reading room is ready.</h2>
+        <p>Drop EPUB files here or add one from your device. Nothing is uploaded.</p>
+        <label class="empty-add-btn">Add Your First Book</label>
+      </div>
+    </div>
+    <div class="section">
+      <h2 class="section-title">6. Toast Notifications</h2>
+      <p class="section-desc"><span class="idea-label">IDEA 6</span>Non-intrusive toast notifications appear at the bottom center with a smooth slide-up animation.</p>
+      <div style="margin-top:20px;"><button id="show-toast-btn" class="modal-btn confirm">Show Toast</button></div>
+    </div>
+  </div>
+
+  <div class="context-menu" id="context-menu">
+    <div class="context-menu-item" onclick="handleContextAction('read')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Read</div>
+    <div class="context-menu-item" onclick="handleContextAction('info')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Book Info</div>
+    <div class="context-menu-separator"></div>
+    <div class="context-menu-item danger" onclick="handleContextAction('delete')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>Delete</div>
+  </div>
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal">
+      <div class="modal-header"><h3>Remove Book</h3><div class="modal-close" onclick="closeModal('delete-modal')">x</div></div>
+      <div class="modal-body"><p>Are you sure you want to remove "The Alchemist" from your library? This action cannot be undone.</p></div>
+      <div class="modal-footer"><button class="modal-btn cancel" onclick="closeModal('delete-modal')">Cancel</button><button class="modal-btn confirm" onclick="closeModal('delete-modal')">Remove</button></div>
+    </div>
+  </div>
+  <div class="toast-container" id="toast-container"></div>
+  <script>
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.body.setAttribute('data-theme', btn.dataset.theme);
+      });
+    });
+    const books = [
+      { id:1, title:'The Great Gatsby', author:'F. Scott Fitzgerald', progress:72, lastRead:'2 hours ago', cover:'#667eea' },
+      { id:2, title:'1984', author:'George Orwell', progress:35, lastRead:'Yesterday', cover:'#f093fb' },
+      { id:3, title:'To Kill a Mockingbird', author:'Harper Lee', progress:0, lastRead:'', cover:'#4facfe' },
+      { id:4, title:'The Alchemist', author:'Paulo Coelho', progress:91, lastRead:'3 days ago', cover:'#10b918' },
+      { id:5, title:'Brave New World', author:'Aldous Huxley', progress:15, lastRead:'Last week', cover:'#f59e0b' },
+      { id:6, title:'The Catcher in the Rye', author:'J.D. Salinger', progress:0, lastRead:'', cover:'#8b5cf6' },
+    ];
+    function renderBooks(containerId) {
+      const c = document.getElementById(containerId); if (!c) return; c.innerHTML = '';
+      books.forEach(b => {
+        const card = document.createElement('div'); card.className = 'book-card';
+        card.innerHTML = '<div class="book-cover-wrapper"><img src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 150\'%3E%3Crect width=\'100\' height=\'150\' fill=\''+b.cover+'\'/%3E%3Ctext x=\'50\' y=\'75\' fill=\'white\' font-size=\'7\' text-anchor=\'middle\'%3E'+b.title+'%3C/text%3E%3C/svg%3E" class="book-cover" alt="'+b.title+'"></div><div class="book-info"><div class="book-title">'+b.title+'</div><div class="book-author">'+b.author+'</div></div>';
+        c.appendChild(card);
+      });
+    }
+    function renderBooksWithProgress() {
+      const c = document.getElementById('book-grid-demo'); c.innerHTML = '';
+      books.forEach(b => {
+        const card = document.createElement('div'); card.className = 'book-card'; card.dataset.id = b.id;
+        const badge = b.progress>0?'<span class="continue-badge">Continue Reading</span>':'';
+        const meta = b.lastRead?'<div class="book-meta"><span class="book-last-read">'+b.lastRead+'</span></div>':'';
+        card.innerHTML = '<div class="book-cover-wrapper"><img src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 150\'%3E%3Crect width=\'100\' height=\'150\' fill=\''+b.cover+'\'/%3E%3Ctext x=\'50\' y=\'75\' fill=\'white\' font-size=\'7\' text-anchor=\'middle\'%3E'+b.title+'%3C/text%3E%3C/svg%3E" class="book-cover" alt="'+b.title+'">'+badge+'<div class="book-progress-bar"><div class="book-progress-fill" style="width:'+b.progress+'%"></div></div><div class="book-actions"><button class="book-action-btn" onclick="showContextMenuFromCard(event,'+b.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button></div></div><div class="book-info"><div class="book-title">'+b.title+'</div><div class="book-author">'+b.author+'</div>'+meta+'</div>';
+        card.addEventListener('contextmenu', (e) => { e.preventDefault(); showContextMenu(e.clientX, e.clientY, b); });
+        c.appendChild(card);
+      });
+    }
+    function showContextMenu(x,y,book) {
+      const m=document.getElementById('context-menu');
+      m.style.left=x+'px'; m.style.top=y+'px'; m.classList.add('show');
+      setTimeout(()=>{document.addEventListener('click', closeContextMenu)},0);
+    }
+    function showContextMenuFromCard(e,id) {
+      e.stopPropagation();
+      showContextMenu(e.clientX, e.clientY, books.find(b=>b.id===id));
+    }
+    function closeContextMenu() { document.getElementById('context-menu').classList.remove('show'); document.removeEventListener('click', closeContextMenu); }
+    function handleContextAction(a) { document.getElementById('context-menu').classList.remove('show'); if(a==='delete') document.getElementById('delete-modal').classList.add('show'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+    document.getElementById('show-library-btn').addEventListener('click', ()=>{
+      const l=document.getElementById('library-view-demo'), r=document.getElementById('reader-view-demo');
+      l.classList.remove('active'); r.classList.remove('active'); l.classList.add('exit');
+      setTimeout(()=>{l.classList.remove('exit');l.classList.remove('active');r.classList.add('active')},400);
+    });
+    document.getElementById('show-reader-btn').addEventListener('click', ()=>{
+      const l=document.getElementById('library-view-demo'), r=document.getElementById('reader-view-demo');
+      r.classList.remove('active'); l.classList.remove('exit'); r.classList.add('exit');
+      setTimeout(()=>{r.classList.remove('exit');r.classList.remove('active');l.classList.add('active')},400);
+    });
+    document.getElementById('show-toast-btn').addEventListener('click', ()=>{
+      const t=document.createElement('div'); t.className='toast';
+      t.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg> Book added to your library!';
+      document.getElementById('toast-container').appendChild(t);
+      setTimeout(()=>{t.classList.add('fade-out');setTimeout(()=>t.remove(),300)},3000);
+    });
+    let hideTimer;
+    function resetHideTimer() {
+      clearTimeout(hideTimer);
+      document.getElementById('demo-header').classList.add('show'); document.getElementById('demo-footer').classList.add('show');
+      hideTimer=setTimeout(()=>{document.getElementById('demo-header').classList.remove('show');document.getElementById('demo-footer').classList.remove('show')},3000);
+    }
+    document.querySelector('.reader-area').closest('.reader-body').addEventListener('mousemove', resetHideTimer);
+    renderBooks('transition-book-grid'); renderBooksWithProgress();
+  </script>
+</body>
+</html>

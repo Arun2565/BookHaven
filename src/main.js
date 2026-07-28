@@ -307,7 +307,7 @@ function setupEventListeners() {
     }
   });
   
-  // Keyboard Navigation
+  // Keyboard Navigation (only library search and Escape on parent document)
   document.addEventListener('keydown', (e) => {
     if (!state.rendition && e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
       e.preventDefault();
@@ -315,10 +315,6 @@ function setupEventListeners() {
       return;
     }
 
-    if (!state.rendition) return;
-    
-    if (e.key === 'ArrowLeft') state.rendition.prev();
-    if (e.key === 'ArrowRight') state.rendition.next();
     if (e.key === 'Escape') {
       closeSidebars();
       els.settings.panel.classList.remove('show');
@@ -686,6 +682,15 @@ async function openBook(id) {
     state.rendition.on('markClicked', (cfiRange, data, contents) => {
       if (data?.annotationId) openSidebar('annotations');
     });
+
+    state.rendition.on('rendered', (section, view) => {
+      if (view.iframe?.contentWindow) {
+        view.iframe.contentWindow.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft') { e.preventDefault(); state.rendition.prev(); }
+          if (e.key === 'ArrowRight') { e.preventDefault(); state.rendition.next(); }
+        });
+      }
+    });
     
     // Setup TOC
     setupTOC();
@@ -966,9 +971,9 @@ function changeFontSize(delta) {
   state.fontSize = Math.max(50, Math.min(300, state.fontSize + delta));
   els.settings.fontVal.textContent = `${state.fontSize}%`;
   localStorage.setItem('bookhaven-fontsize', state.fontSize);
-  
+
   if (state.rendition) {
-    state.rendition.themes.fontSize(`${state.fontSize}%`);
+    setupRenditionTheme();
   }
 }
 
@@ -1084,7 +1089,7 @@ function setupRenditionTheme() {
     });
   }
 
-  reRenderAnnotations();
+  requestAnimationFrame(() => reRenderAnnotations());
 }
 
 // -----------------------------------------------------------------------------
