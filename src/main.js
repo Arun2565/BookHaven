@@ -683,13 +683,14 @@ async function openBook(id) {
       if (data?.annotationId) openSidebar('annotations');
     });
 
-    state.rendition.on('rendered', (section, view) => {
-      if (view.iframe?.contentWindow) {
-        view.iframe.contentWindow.addEventListener('keydown', (e) => {
-          if (e.key === 'ArrowLeft') { e.preventDefault(); state.rendition.prev(); }
-          if (e.key === 'ArrowRight') { e.preventDefault(); state.rendition.next(); }
-        });
-      }
+    state.rendition.on('relocated', () => {
+      const iframe = els.reader.area.querySelector('iframe');
+      if (!iframe || iframe.dataset.navListener) return;
+      iframe.dataset.navListener = '1';
+      iframe.contentWindow.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); state.rendition.prev(); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); state.rendition.next(); }
+      });
     });
     
     // Setup TOC
