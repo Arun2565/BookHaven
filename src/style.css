@@ -826,6 +826,18 @@ input {
   transform: translateX(0);
 }
 
+.sidebar-right {
+  left: auto;
+  right: 0;
+  border-right: none;
+  border-left: 1px solid var(--border-color);
+  transform: translateX(100%);
+}
+
+.sidebar-right.open {
+  transform: translateX(0);
+}
+
 .sidebar-header {
   padding: 20px;
   display: flex;

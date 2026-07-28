@@ -4,11 +4,13 @@ import JSZip from 'jszip';
 import ebGaramondFont from '@fontsource/eb-garamond/files/eb-garamond-latin-400-normal.woff2?url';
 import frauncesFont from '@fontsource/fraunces/files/fraunces-latin-400-normal.woff2?url';
 import newsreaderFont from '@fontsource/newsreader/files/newsreader-latin-400-normal.woff2?url';
+import instrumentSerifFont from '@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2?url';
 
 const READER_FONT_CSS = [
   ['EB Garamond', ebGaramondFont],
   ['Fraunces', frauncesFont],
-  ['Newsreader', newsreaderFont]
+  ['Newsreader', newsreaderFont],
+  ['Instrument Serif', instrumentSerifFont]
 ].map(([family, url]) => `@font-face { font-family: "${family}"; src: url("${url}") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }`).join('\n') + `
 ::selection { background: rgba(99, 102, 241, 0.3) !important; color: inherit !important; }
 ::-moz-selection { background: rgba(99, 102, 241, 0.3) !important; color: inherit !important; }
@@ -1013,7 +1015,8 @@ function setupRenditionTheme() {
     'default': '"Newsreader", Georgia, serif',
     'newsreader': '"Newsreader", Georgia, serif',
     'fraunces': '"Fraunces", Georgia, serif',
-    'ebgaramond': '"EB Garamond", Georgia, serif'
+    'ebgaramond': '"EB Garamond", Georgia, serif',
+    'instrumentserif': '"Instrument Serif", serif'
   };
   
   // Map theme colors
