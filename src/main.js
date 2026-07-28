@@ -18,10 +18,13 @@ const READER_FONT_CSS = [
   transform: translateY(4px) !important;
 }
 
+.bookhaven-highlight {
+  fill-opacity: 0.55 !important;
+  mix-blend-mode: normal !important;
+}
 .bookhaven-highlight rect {
   rx: 4px !important;
   ry: 4px !important;
-  mix-blend-mode: normal !important;
 }
 
 .theme-dark .bookhaven-highlight rect {
