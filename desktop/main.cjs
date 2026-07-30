@@ -1,4 +1,4 @@
-const { app, BrowserWindow, shell, dialog } = require('electron');
+const { app, BrowserWindow, shell, dialog, ipcMain } = require('electron');
 const path = require('node:path');
 const { autoUpdater } = require('electron-updater');
 
@@ -16,7 +16,8 @@ function createWindow() {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: true
+      sandbox: true,
+      preload: path.join(__dirname, 'preload.cjs')
     }
   });
 
@@ -75,19 +76,22 @@ app.whenReady().then(() => {
 
     autoUpdater.on('update-downloaded', (info) => {
       log(`Update fully downloaded: v${info.version}`);
-      dialog.showMessageBox({
-        type: 'info',
-        title: 'Update Ready',
-        message: `A new version of BookHaven (v${info.version}) has been downloaded.`,
-        detail: 'Would you like to restart BookHaven now to apply the update?',
-        buttons: ['Restart & Install Now', 'Later'],
-        defaultId: 0
-      }).then((result) => {
-        if (result.response === 0) {
-          log('Restarting app to apply update...');
-          autoUpdater.quitAndInstall();
-        }
-      });
+      const win = BrowserWindow.getAllWindows()[0];
+      if (win) {
+        win.webContents.send('update-available', {
+          version: info.version,
+          currentVersion: app.getVersion()
+        });
+      }
+    });
+
+    ipcMain.on('install-update', () => {
+      log('IPC: install-update received — restarting app...');
+      autoUpdater.quitAndInstall();
+    });
+
+    ipcMain.on('dismiss-update', () => {
+      log('IPC: dismiss-update — user deferred update');
     });
 
     log('Triggering checkForUpdatesAndNotify()...');

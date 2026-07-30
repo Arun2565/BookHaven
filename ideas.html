@@ -3,228 +3,867 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BookHaven UX Ideas Mockup</title>
+  <title>BookHaven UX Ideas Showcase</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Fraunces:wght@400;500;600&family=Newsreader:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap');
+    
     :root {
-      --bg-color: #FAF9F5; --surface-color: #FFFFFF; --surface-color-rgb: 255, 255, 255;
-      --text-primary: #121316; --text-secondary: #5E636E; --border-color: rgba(18, 19, 22, 0.08);
-      --accent-color: #6366f1; --accent-hover: #4f46e5; --accent-rgb: 99, 102, 241;
-      --shadow-sm: 0 2px 8px rgba(18, 19, 22, 0.03); --shadow-md: 0 8px 24px rgba(18, 19, 22, 0.06);
-      --shadow-lg: 0 16px 40px rgba(18, 19, 22, 0.1); --radius-sm: 8px; --radius-md: 14px; --radius-lg: 24px;
-      --transition-smooth: all 0.25s ease; --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15);
-      --font-ui: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --font-reader: 'Newsreader', Georgia, serif; --font-display: 'Fraunces', Georgia, serif;
+      --bg-color: #FAF6EE;
+      --surface-color: #FFFFFF;
+      --text-primary: #2D2522;
+      --text-secondary: #6E625B;
+      --text-muted: #8F8177;
+      --border-color: rgba(163, 74, 46, 0.1);
+      --accent-color: #A34A2E;
+      --accent-hover: #8C3920;
+      --accent-light: #F8ECE7;
+      --shadow-sm: 0 4px 12px rgba(45, 37, 34, 0.03);
+      --shadow-md: 0 12px 36px rgba(45, 37, 34, 0.06);
+      --shadow-lg: 0 24px 60px rgba(45, 37, 34, 0.1);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      
+      --font-ui: 'Instrument Sans', -apple-system, sans-serif;
+      --font-reader: 'Newsreader', serif;
+      --font-display: 'Fraunces', serif;
     }
+
     [data-theme="dark"] {
-      --bg-color: #0E0E11; --surface-color: #17171C; --surface-color-rgb: 23, 23, 28;
-      --text-primary: #F3F4F6; --text-secondary: #9CA3AF; --border-color: rgba(243, 244, 246, 0.08);
-      --accent-color: #818cf8; --accent-hover: #6366f1; --accent-rgb: 129, 140, 248;
+      --bg-color: #110F0E;
+      --surface-color: #1A1816;
+      --text-primary: #F3EFE9;
+      --text-secondary: #A59E95;
+      --text-muted: #7F776E;
+      --border-color: rgba(243, 239, 233, 0.08);
+      --accent-color: #E28C68;
+      --accent-hover: #F2A17E;
+      --accent-light: rgba(226, 140, 104, 0.12);
     }
+
     [data-theme="sepia"] {
-      --bg-color: #F5EEDC; --surface-color: #FCF7EB; --surface-color-rgb: 252, 247, 235;
-      --text-primary: #3B2A18; --text-secondary: #6B553E; --border-color: rgba(59, 42, 24, 0.1);
-      --accent-color: #C07A43; --accent-hover: #A56432; --accent-rgb: 192, 122, 67;
+      --bg-color: #F6EFE0;
+      --surface-color: #FDF9F0;
+      --text-primary: #3E2B1E;
+      --text-secondary: #7E6551;
+      --text-muted: #9E8571;
+      --border-color: rgba(62, 43, 30, 0.08);
+      --accent-color: #B25A38;
+      --accent-hover: #984728;
+      --accent-light: #FAF2E3;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font-ui); background-color: var(--bg-color); color: var(--text-primary); line-height: 1.5; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-    .page { max-width: 1400px; margin: 0 auto; padding: 40px 32px; }
-    .page-title { font-family: var(--font-display); font-size: 2.5rem; font-weight: 550; letter-spacing: -0.04em; margin-bottom: 8px; }
-    .page-subtitle { color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 40px; max-width: 700px; }
-    .section { margin-bottom: 60px; padding: 32px; background-color: var(--surface-color); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); }
-    .section-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+
+    body { 
+      font-family: var(--font-ui); 
+      background-color: var(--bg-color); 
+      color: var(--text-primary); 
+      line-height: 1.6; 
+      overflow-x: hidden; 
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .page { max-width: 1100px; margin: 0 auto; padding: 60px 24px; }
+
+    .page-title { 
+      font-family: var(--font-display); 
+      font-size: 2.8rem; 
+      font-weight: 800; 
+      letter-spacing: -0.03em; 
+      margin-bottom: 8px; 
+    }
+    .page-title span { font-style: italic; font-weight: 400; color: var(--accent-color); }
+    .page-subtitle { color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 40px; max-width: 750px; }
+
+    .section { 
+      margin-bottom: 40px; 
+      padding: 32px; 
+      background-color: var(--surface-color); 
+      border-radius: var(--radius-lg); 
+      box-shadow: var(--shadow-sm); 
+      border: 1px solid var(--border-color); 
+    }
+
+    .section-title { 
+      font-family: var(--font-display);
+      font-size: 1.5rem; 
+      font-weight: 700; 
+      margin-bottom: 12px; 
+      padding-bottom: 12px; 
+      border-bottom: 1px solid var(--border-color); 
+    }
+
     .section-desc { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 24px; }
-    .theme-toggle { display: flex; gap: 8px; margin-bottom: 24px; }
-    .theme-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--bg-color); font-size: 0.85rem; cursor: pointer; transition: var(--transition-smooth); }
-    .theme-btn:hover { background: var(--surface-color); }
+
+    .theme-toggle { display: flex; gap: 8px; margin-bottom: 30px; }
+    .theme-btn { 
+      padding: 6px 16px; 
+      border-radius: 20px; 
+      border: 1px solid var(--border-color); 
+      background: var(--surface-color); 
+      color: var(--text-secondary);
+      font-size: 0.85rem; 
+      font-weight: 600;
+      cursor: pointer; 
+      transition: var(--transition-smooth); 
+    }
     .theme-btn.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
-    .library-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background-color: rgba(var(--surface-color-rgb), 0.8); backdrop-filter: blur(20px) saturate(120%); border-bottom: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 24px; }
-    .app-logo { font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-    .logo-icon { width: 24px; height: 24px; color: var(--accent-color); }
-    .search-bar { position: relative; flex: 1; max-width: 360px; margin: 0 24px; }
-    .search-bar input { width: 100%; padding: 10px 16px 10px 40px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background-color: var(--surface-color); color: var(--text-primary); transition: var(--transition-smooth); }
-    .search-bar input:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15); }
-    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-secondary); }
-    .header-right { display: flex; align-items: center; gap: 16px; }
-    .header-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; color: var(--text-secondary); transition: all 0.2s; }
-    .header-btn:hover { background-color: rgba(0, 0, 0, 0.05); color: var(--text-primary); }
-    [data-theme="dark"] .header-btn:hover { background-color: rgba(255, 255, 255, 0.1); }
-    .import-btn { display: inline-flex; align-items: center; gap: 8px; background-color: var(--accent-color); color: white; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background-color 0.2s; }
-    .import-btn:hover { background-color: var(--accent-hover); }
-    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 28px; }
-    .book-card { display: flex; flex-direction: column; gap: 10px; cursor: pointer; position: relative; transition: var(--transition-spring); }
-    .book-card:hover { transform: translateY(-4px); }
-    .book-cover-wrapper { position: relative; width: 100%; aspect-ratio: 2 / 3; border-radius: 13px; box-shadow: 0 14px 24px rgba(34, 38, 51, 0.16); overflow: hidden; background-color: var(--surface-color); display: flex; align-items: center; justify-content: center; transition: var(--transition-spring); }
-    .book-card:hover .book-cover-wrapper { box-shadow: 0 20px 32px rgba(34, 38, 51, 0.22); }
-    .book-cover { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-    .book-card:hover .book-cover { transform: scale(1.04); }
+
+    .idea-label { 
+      display: inline-block; 
+      background: var(--accent-color); 
+      color: white; 
+      font-size: 0.7rem; 
+      font-weight: 700; 
+      padding: 2px 8px; 
+      border-radius: 10px; 
+      margin-right: 8px; 
+      text-transform: uppercase;
+    }
+
+    /* Library Mockup */
+    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
+    .book-card { display: flex; flex-direction: column; gap: 8px; position: relative; }
+    .book-cover-wrapper { 
+      position: relative; width: 100%; aspect-ratio: 2 / 3; border-radius: var(--radius-sm); 
+      box-shadow: var(--shadow-sm); overflow: hidden; display: flex; align-items: center; justify-content: center; 
+    }
     .book-progress-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background-color: rgba(0, 0, 0, 0.08); }
-    .book-progress-fill { height: 100%; background-color: var(--accent-color); border-radius: 0 0 4px 4px; transition: width 0.3s ease; }
-    .continue-badge { position: absolute; top: 8px; left: 8px; background: rgba(99, 102, 241, 0.9); color: white; font-size: 0.65rem; font-weight: 600; padding: 3px 8px; border-radius: 10px; backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.2s; z-index: 2; }
-    .book-card:hover .continue-badge { opacity: 1; }
-    .book-actions { position: absolute; top: 8px; right: 8px; opacity: 0; transition: opacity 0.2s; display: flex; gap: 4px; }
-    .book-card:hover .book-actions { opacity: 1; }
-    .book-action-btn { width: 28px; height: 28px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.9); color: #333; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s; }
-    .book-action-btn:hover { background-color: white; transform: scale(1.1); }
-    .book-info { display: flex; flex-direction: column; gap: 4px; }
-    .book-title { font-size: 1rem; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .book-author { font-size: 0.85rem; color: var(--text-secondary); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-    .book-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-secondary); }
-    .book-last-read { font-style: italic; }
-    .context-menu { position: fixed; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); padding: 6px; min-width: 180px; z-index: 1000; display: none; }
-    .context-menu.show { display: block; }
-    .context-menu-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; transition: var(--transition-smooth); }
-    .context-menu-item:hover { background-color: rgba(99, 102, 241, 0.08); color: var(--accent-color); }
-    .context-menu-item.danger:hover { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; }
-    .context-menu-item svg { width: 16px; height: 16px; }
-    .context-menu-separator { height: 1px; background: var(--border-color); margin: 4px 0; }
-    .view { position: absolute; top: 0; left: 0; width: 100%; opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s ease; transform: translateX(20px); }
-    .view.active { opacity: 1; pointer-events: auto; transform: translateX(0); }
-    .view.exit { opacity: 0; pointer-events: none; transform: translateX(-20px); }
-    .reader-header { position: relative; width: 100%; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; background-color: rgba(var(--surface-color-rgb), 0.8); backdrop-filter: blur(20px) saturate(120%); border-bottom: 1px solid var(--border-color); z-index: 30; flex-shrink: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-    .reader-header:not(.show) { opacity: 0; transform: translateY(-100%); pointer-events: none; }
-    .reader-btn { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: background-color 0.2s; }
-    .reader-btn:hover { background-color: rgba(128, 128, 128, 0.1); }
-    .reader-btn svg { width: 22px; height: 22px; }
-    .reader-title { font-size: 1rem; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40%; text-align: center; }
-    .reader-footer { width: 100%; padding: 12px 40px; display: flex; align-items: center; justify-content: center; gap: 24px; background-color: var(--surface-color); z-index: 30; border-top: 1px solid var(--border-color); flex-shrink: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-    .reader-footer:not(.show) { opacity: 0; transform: translateY(100%); pointer-events: none; }
-    .reader-location, .reader-percent { font-size: 0.85rem; color: var(--text-secondary); min-width: 60px; text-align: center; font-variant-numeric: tabular-nums; }
-    .progress-container { flex: 1; max-width: 600px; }
-    .progress-slider { width: 100%; -webkit-appearance: none; background: transparent; outline: none; height: 24px; cursor: pointer; }
-    .progress-slider::-webkit-slider-runnable-track { width: 100%; height: 4px; background: rgba(128, 128, 128, 0.2); border-radius: 2px; }
-    .progress-slider::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--text-primary); margin-top: -6px; box-shadow: var(--shadow-sm); }
-    .reader-body { flex: 1; display: flex; position: relative; min-height: 0; width: 100%; overflow: hidden; }
-    .reader-area { flex: 1; height: 100%; width: 100%; padding: 0 40px; overflow-y: auto; font-family: var(--font-reader); font-size: 1.1rem; line-height: 1.8; color: #333; background: white; }
-    .page-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); opacity: 0.3; transition: opacity 0.2s; z-index: 20; border-radius: 50%; background: rgba(255, 255, 255, 0.8); box-shadow: var(--shadow-sm); }
-    .page-nav-btn:hover { opacity: 1 !important; background: white; box-shadow: var(--shadow-md); }
-    .page-prev { left: 16px; } .page-next { right: 16px; }
-    .page-nav-btn svg { width: 32px; height: 32px; }
-    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 400px; text-align: center; border: 2px dashed var(--border-color); border-radius: var(--radius-lg); padding: 40px; }
-    .empty-state h2 { font-family: var(--font-display); font-size: 1.9rem; font-weight: 550; margin-bottom: 8px; }
-    .empty-state p { color: var(--text-secondary); margin-bottom: 24px; }
-    .empty-add-btn { display: inline-flex; align-items: center; gap: 8px; background-color: var(--surface-color); color: var(--text-primary); border: 1px solid var(--border-color); padding: 12px 24px; border-radius: 24px; font-weight: 500; cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.2s; }
-    .empty-add-btn:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-    .toast-container { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-    .toast { background-color: rgba(28, 28, 30, 0.9); color: white; padding: 12px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); display: flex; align-items: center; gap: 8px; animation: slideUp 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-    [data-theme="dark"] .toast { background-color: rgba(255, 255, 255, 0.9); color: #1c1c1e; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .toast.fade-out { opacity: 0; transform: translateY(-10px) scale(0.9); transition: all 0.3s; }
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-    .modal-overlay.show { opacity: 1; pointer-events: auto; }
-    .modal { background-color: var(--surface-color); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width: 90%; max-width: 400px; transform: translateY(20px) scale(0.95); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); overflow: hidden; }
-    .modal-overlay.show .modal { transform: translateY(0) scale(1); }
-    .modal-header { padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
-    .modal-header h3 { font-size: 1.2rem; font-weight: 600; }
-    .modal-close { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; }
-    .modal-close:hover { background-color: var(--bg-color); color: var(--text-primary); }
-    .modal-body { padding: 24px; }
-    .modal-body p { color: var(--text-secondary); margin-bottom: 16px; }
-    .modal-footer { padding: 16px 24px; display: flex; justify-content: flex-end; gap: 12px; background-color: var(--bg-color); border-top: 1px solid var(--border-color); }
-    .modal-btn { padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 500; transition: all 0.2s; cursor: pointer; }
-    .modal-btn.cancel { background-color: transparent; color: var(--text-primary); border: 1px solid var(--border-color); }
-    .modal-btn.cancel:hover { background-color: rgba(0, 0, 0, 0.05); }
-    .modal-btn.confirm { background-color: #ef4444; color: white; border: none; }
-    .modal-btn.confirm:hover { background-color: #d70015; }
-    pre { background: rgba(18, 19, 22, 0.04); border-radius: var(--radius-sm); padding: 16px; overflow-x: auto; margin: 12px 0; border: 1px solid var(--border-color); }
-    pre code { font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.85rem; line-height: 1.5; }
-    .highlight { background: rgba(99, 102, 241, 0.1); padding: 1px 4px; border-radius: 3px; }
-    .idea-label { display: inline-block; background: var(--accent-color); color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-right: 8px; margin-bottom: 4px; }
-    @media (max-width: 700px) { .library-header { flex-wrap: wrap; gap: 12px; } .search-bar { order: 3; width: 100%; } .header-right { gap: 6px; } .book-grid { grid-template-columns: repeat(2, 1fr); } }
+    .book-progress-fill { height: 100%; background-color: var(--accent-color); }
+    .continue-badge { position: absolute; top: 6px; left: 6px; background: var(--accent-color); color: white; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+    .book-title { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .book-author { font-size: 0.8rem; color: var(--text-secondary); }
+
+    /* Analytics Dashboard styling */
+    .analytics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.2rem; margin-bottom: 1.5rem; }
+    .analytics-card { background: var(--bg-color); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: var(--radius-md); }
+    .analytics-num { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--accent-color); }
+    .analytics-label { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; }
+
+    /* Marker Toolbar */
+    .marker-toolbar { display: inline-flex; align-items: center; gap: 8px; background: var(--surface-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 30px; box-shadow: var(--shadow-md); margin-bottom: 16px; }
+    .color-swatch { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+    .color-swatch:hover { transform: scale(1.2); }
+    .color-swatch.selected { border-color: var(--text-primary); }
+    .sample-reader-box { background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; font-family: var(--font-reader); font-size: 1.1rem; line-height: 1.6; }
+
+    /* Update Notification Banner */
+    .demo-viewport {
+      position: relative;
+      width: 100%;
+      height: 340px;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: 24px;
+    }
+    .demo-app-chrome {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 36px;
+      background: rgba(0,0,0,0.04);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 8px;
+    }
+    .demo-app-chrome span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      opacity: 0.3;
+    }
+    .demo-reader-mock {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -55%);
+      text-align: center;
+      font-family: var(--font-reader);
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      user-select: none;
+    }
+    .demo-reader-mock p { margin: 0; opacity: 0.4; }
+    .demo-reader-mock .demo-accent { opacity: 0.7; }
+
+    .update-banner-demo {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      width: 340px;
+      max-width: calc(100% - 48px);
+      background: #1C1C1E;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 12px 14px 10px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+      z-index: 10;
+      transform: translateY(120%) scale(0.95);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+      pointer-events: none;
+    }
+    .update-banner-demo.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .update-banner-demo-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .update-banner-demo-left {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      flex: 1;
+      min-width: 0;
+    }
+    .update-banner-demo-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      flex-shrink: 0;
+    }
+    .update-banner-demo-icon svg { width: 14px; height: 14px; }
+    .update-banner-demo-text { flex: 1; min-width: 0; }
+    .update-banner-demo-title {
+      font-family: 'Bricolage Grotesque', -apple-system, sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.35;
+      margin-bottom: 2px;
+    }
+    .update-banner-demo-title .version-tag {
+      color: rgba(255,255,255,0.5);
+      font-weight: 500;
+    }
+    .update-banner-demo-subtitle {
+      font-family: 'Bricolage Grotesque', -apple-system, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.35;
+    }
+    .update-banner-demo-close {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .update-banner-demo-close:hover {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.8);
+    }
+    .update-banner-demo-close svg { width: 13px; height: 13px; }
+    .update-banner-demo-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .update-banner-demo-btn {
+      font-family: 'Bricolage Grotesque', -apple-system, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .update-banner-demo-later {
+      background: transparent;
+      color: rgba(255,255,255,0.55);
+    }
+    .update-banner-demo-later:hover {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.8);
+    }
+    .update-banner-demo-install {
+      background: #6366f1;
+      color: #FFFFFF;
+    }
+    .update-banner-demo-install:hover {
+      background: #4f46e5;
+    }
+
+    .demo-trigger-btn {
+      font-family: var(--font-ui);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      background: var(--accent-color);
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      margin-top: 16px;
+    }
+    .demo-trigger-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+    .demo-annotation {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 12px;
+      font-weight: 500;
+    }
+    .marker-toolbar { display: inline-flex; align-items: center; gap: 8px; background: var(--surface-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 30px; box-shadow: var(--shadow-md); margin-bottom: 16px; }
+    .color-swatch { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+    .color-swatch:hover { transform: scale(1.2); }
+    .color-swatch.selected { border-color: var(--text-primary); }
+    .sample-reader-box { background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; font-family: var(--font-reader); font-size: 1.1rem; line-height: 1.6; }
+
+    /* --- 5. Page Turn Animation --- */
+    .page-turn-demo {
+      position: relative;
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .page-turn-stage {
+      position: relative;
+      width: 85%;
+      max-width: 440px;
+      height: 200px;
+      perspective: 1000px;
+    }
+    .page-turn-card {
+      position: absolute;
+      inset: 0;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 24px 28px;
+      font-family: var(--font-reader);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      backface-visibility: hidden;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .page-turn-card.exit-left {
+      transform: translateX(-100%) rotateY(12deg);
+      opacity: 0;
+    }
+    .page-turn-card.exit-right {
+      transform: translateX(100%) rotateY(-12deg);
+      opacity: 0;
+    }
+    .page-turn-card.enter-right {
+      transform: translateX(100%) rotateY(-12deg);
+      opacity: 0;
+    }
+    .page-turn-card.enter-left {
+      transform: translateX(-100%) rotateY(12deg);
+      opacity: 0;
+    }
+    .page-turn-card.enter-from-right {
+      transform: translateX(0) rotateY(0);
+      opacity: 1;
+    }
+    .page-turn-card.enter-from-left {
+      transform: translateX(0) rotateY(0);
+      opacity: 1;
+    }
+    .page-turn-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .page-turn-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      background: var(--surface-color);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      font-size: 1.1rem;
+    }
+    .page-turn-btn:hover { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+    .page-turn-page-num { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); min-width: 60px; text-align: center; }
+
+    /* --- 6. Focus Mode --- */
+    .focus-demo {
+      position: relative;
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      min-height: 300px;
+      transition: background 0.4s ease;
+    }
+    .focus-demo.active { background: var(--bg-color); }
+    .focus-demo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-color);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .focus-demo-header-left { display: flex; align-items: center; gap: 8px; }
+    .focus-demo-header-left span {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--text-muted); opacity: 0.3;
+    }
+    .focus-demo-header-title { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
+    .focus-demo-body {
+      padding: 32px 36px;
+      font-family: var(--font-reader);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      transition: padding 0.4s ease;
+    }
+    .focus-demo.active .focus-demo-body { padding: 48px 64px; }
+    .focus-demo.active .focus-demo-header { opacity: 0; transform: translateY(-100%); pointer-events: none; }
+    .focus-demo-footer {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      transition: opacity 0.3s ease;
+    }
+    .focus-demo.active .focus-demo-footer { opacity: 0; pointer-events: none; }
+    .focus-toggle-btn {
+      position: absolute;
+      bottom: 52px;
+      right: 16px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      background: var(--surface-color);
+      color: var(--text-primary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .focus-toggle-btn:hover { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+    .focus-demo.active .focus-toggle-btn { bottom: 16px; }
+
+    /* --- 7. Reading Time Estimator --- */
+    .time-estimator-demo {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      font-family: var(--font-reader);
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
+    .time-estimator-demo-content { margin-bottom: 20px; color: var(--text-primary); }
+    .time-estimator-demo-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+    }
+    .reading-time-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: var(--accent-light);
+      border: 1px solid var(--border-color);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-color);
+    }
+    .reading-time-chip svg { width: 14px; height: 14px; }
+    .reading-time-chip.ghost { background: transparent; color: var(--text-muted); }
+
+    /* --- 8. Quick Brightness Overlay --- */
+    .brightness-demo {
+      position: relative;
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      height: 250px;
+    }
+    .brightness-demo-reader {
+      font-family: var(--font-reader);
+      font-size: 1rem;
+      line-height: 1.8;
+      padding: 32px 36px;
+      color: var(--text-primary);
+      position: relative;
+      z-index: 1;
+    }
+    .brightness-overlay {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 2;
+    }
+    .brightness-control {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 8px 16px;
+      box-shadow: var(--shadow-md);
+      z-index: 3;
+      opacity: 0;
+      transform: translateX(-50%) translateY(20px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .brightness-control.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .brightness-toggle-tab {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 14px;
+      border-radius: 12px 12px 0 0;
+      background: var(--accent-color);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      z-index: 4;
+      transition: var(--transition-smooth);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .brightness-toggle-tab:hover { padding-bottom: 6px; }
+    .brightness-control-slider {
+      -webkit-appearance: none;
+      width: 120px;
+      height: 4px;
+      background: var(--border-color);
+      border-radius: 2px;
+      outline: none;
+    }
+    .brightness-control-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent-color);
+      cursor: pointer;
+    }
+    .brightness-control-icon { color: var(--text-muted); font-size: 0.85rem; }
   </style>
 </head>
 <body>
   <div class="page">
-    <h1 class="page-title">BookHaven UX Ideas Mockup</h1>
-    <p class="page-subtitle">A visual showcase of proposed improvements to the BookHaven e-reader. Hover over book cards to see progress bars and context menus.</p>
+    <h1 class="page-title">BookHaven <span>Selected Features Showcase</span></h1>
+    <p class="page-subtitle">Visual prototypes for the features being implemented into the main application.</p>
+    
     <div class="theme-toggle">
-      <button class="theme-btn active" data-theme="light">Light</button>
-      <button class="theme-btn" data-theme="dark">Dark</button>
-      <button class="theme-btn" data-theme="sepia">Sepia</button>
+      <button class="theme-btn active" data-theme="light">Light Theme</button>
+      <button class="theme-btn" data-theme="dark">Dark Theme</button>
+      <button class="theme-btn" data-theme="sepia">Sepia Theme</button>
     </div>
+
+    <!-- 1. Library reading progress -->
     <div class="section">
-      <h2 class="section-title">1. Library — Reading Progress & Context Menu</h2>
-      <p class="section-desc"><span class="idea-label">IDEA 1</span>Book cards now show a progress bar at the bottom and a "Continue Reading" badge on hover. Right-click to open a context menu with Read, Info, and Delete actions.</p>
-      <div class="library-header">
-        <div class="app-logo"><svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>BookHaven</div>
-        <div class="search-bar"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg><input type="text" placeholder="Search by title or author..." /></div>
-        <div class="header-right">
-          <button class="header-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg></button>
-          <button class="header-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h12M3 18h6" /></svg></button>
-          <label class="import-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14" /></svg>Add Book</label>
+      <h2 class="section-title">1. Library — Reading Progress & Metadata</h2>
+      <p class="section-desc"><span class="idea-label">Active</span>Book cover cards displaying completion percentages and last read timestamps.</p>
+      <div class="book-grid">
+        <div class="book-card">
+          <div class="book-cover-wrapper" style="background:linear-gradient(135deg, #667eea, #764ba2)">
+            <span class="continue-badge">Continue</span>
+            <div class="book-progress-bar"><div class="book-progress-fill" style="width:72%"></div></div>
+          </div>
+          <div class="book-title">The Great Gatsby</div>
+          <div class="book-author">F. Scott Fitzgerald &middot; 72%</div>
         </div>
-      </div>
-      <div class="book-grid" id="book-grid-demo"></div>
-    </div>
-    <div class="section">
-      <h2 class="section-title">2. View Transitions (Library to Reader)</h2>
-      <p class="section-desc"><span class="idea-label">IDEA 2</span>Instead of an instant opacity swap, the library slides left and fades out while the reader slides in from the right.</p>
-      <div style="display: flex; gap: 16px; margin-top: 20px;">
-        <button id="show-library-btn" class="modal-btn cancel">Show Library</button>
-        <button id="show-reader-btn" class="modal-btn confirm">Show Reader</button>
-      </div>
-      <div style="margin-top: 24px; height: 500px; position: relative; border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden;">
-        <div class="view active" id="library-view-demo">
-          <div class="library-header"><div class="app-logo"><svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>BookHaven</div></div>
-          <div style="padding: 24px;"><h3 style="margin-bottom: 16px;">Your Library</h3><div class="book-grid" id="transition-book-grid"></div></div>
-        </div>
-        <div class="view" id="reader-view-demo">
-          <div class="reader-header"><button class="reader-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7" /></svg></button><div class="reader-title">The Great Gatsby</div><div class="reader-controls"><button class="reader-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" /></svg></button><button class="reader-btn" style="font-size:15px;font-weight:700;">Aa</button></div></div>
-          <div class="reader-body"><button class="page-nav-btn page-prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" /></svg></button><div class="reader-area"><p>In his blue gardens men and girls came and went like moths among the whispering reeds.</p><p>So we beat on, boats against the current, borne back ceaselessly into the past.</p></div><button class="page-nav-btn page-next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6" /></svg></button></div>
-          <div class="reader-footer"><span class="reader-location">Page 12 / 180</span><div class="progress-container"><input type="range" class="progress-slider" min="0" max="100" value="7" step="0.1"></div><span class="reader-percent">7%</span></div>
+        <div class="book-card">
+          <div class="book-cover-wrapper" style="background:linear-gradient(135deg, #f093fb, #f5576c)">
+            <div class="book-progress-bar"><div class="book-progress-fill" style="width:35%"></div></div>
+          </div>
+          <div class="book-title">1984</div>
+          <div class="book-author">George Orwell &middot; 35%</div>
         </div>
       </div>
     </div>
+
+    <!-- 2. Analytics Dashboard -->
     <div class="section">
-      <h2 class="section-title">3. Reader — Auto-Hide Toolbar</h2>
-      <p class="section-desc"><span class="idea-label">IDEA 3</span>The reader header and footer auto-hide after 3 seconds of inactivity. Move your mouse to bring them back. Uses smooth CSS transitions.</p>
-      <div style="margin-top:20px;height:400px;position:relative;border:1px solid var(--border-color);border-radius:var(--radius-md);overflow:hidden;background:white;">
-        <div class="reader-header show" id="demo-header"><button class="reader-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7" /></svg></button><div class="reader-title">Fahrenheit 451</div><div class="reader-controls"><button class="reader-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" /></svg></button><button class="reader-btn" style="font-size:15px;font-weight:700;">Aa</button></div></div>
-        <div class="reader-body"><button class="page-nav-btn page-prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" /></svg></button><div class="reader-area"><p style="max-width:600px;margin:0 auto;padding:40px 20px;">It was a pleasure to burn. Move your mouse in this area to toggle the toolbar. It will auto-hide after 3 seconds.</p></div><button class="page-nav-btn page-next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6" /></svg></button></div>
-        <div class="reader-footer show" id="demo-footer"><span class="reader-location">Page 45 / 220</span><div class="progress-container"><input type="range" class="progress-slider" min="0" max="100" value="20" step="0.1"></div><span class="reader-percent">20%</span></div>
-      </div>
-    </div>
-    <div class="section">
-      <h2 class="section-title">4. Context Menu (Right-Click on Book)</h2>
-      <p class="section-desc"><span class="idea-label">IDEA 4</span>Right-click any book card to open a styled context menu with Read, Book Info, and Delete actions. Includes a confirmation dialog for destructive actions.</p>
-      <div style="margin-top:20px;display:flex;justify-content:center;">
-        <div class="book-cover-wrapper" style="width:155px;" id="context-menu-trigger">
-          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 150'%3E%3Crect width='100' height='150' fill='%23667eea'/%3E%3Ctext x='50' y='80' fill='white' font-size='14' text-anchor='middle'%3EThe Alchemist%3C/text%3E%3C/svg%3E" class="book-cover" alt="Book cover">
+      <h2 class="section-title">2. Reading Analytics Dashboard</h2>
+      <p class="section-desc"><span class="idea-label">Active</span>Visual statistics reporting reading time, daily streaks, and average speed.</p>
+      <div class="analytics-grid">
+        <div class="analytics-card">
+          <div class="analytics-num">14.2 hrs</div>
+          <div class="analytics-label">Total Read Time</div>
+        </div>
+        <div class="analytics-card">
+          <div class="analytics-num">5 days</div>
+          <div class="analytics-label">Daily Streak</div>
+        </div>
+        <div class="analytics-card">
+          <div class="analytics-num">265 wpm</div>
+          <div class="analytics-label">Reading Speed</div>
         </div>
       </div>
-      <p style="margin-top:12px;font-size:0.85rem;color:var(--text-secondary);">Right-click the book cover above to see the context menu.</p>
     </div>
+
+    <!-- 3. Multi-Color Marker -->
     <div class="section">
-      <h2 class="section-title">5. Empty State with Illustration</h2>
-      <p class="section-desc"><span class="idea-label">IDEA 5</span>When the library is empty, show a friendly illustration with a clear call-to-action.</p>
-      <div class="empty-state">
-        <svg viewBox="0 0 120 120" fill="none" style="width:120px;height:120px;margin-bottom:24px;"><rect x="20" y="30" width="25" height="60" rx="3" fill="url(#book1)"/><rect x="48" y="25" width="25" height="65" rx="3" fill="url(#book2)"/><rect x="76" y="35" width="25" height="55" rx="3" fill="url(#book3)"/><defs><linearGradient id="book1" x1="20" y1="30" x2="45" y2="90" gradientUnits="userSpaceOnUse"><stop stop-color="#667eea"/><stop offset="1" stop-color="#764ba2"/></linearGradient><linearGradient id="book2" x1="48" y1="25" x2="73" y2="90" gradientUnits="userSpaceOnUse"><stop stop-color="#f093fb"/><stop offset="1" stop-color="#f5576c"/></linearGradient><linearGradient id="book3" x1="76" y1="35" x2="101" y2="90" gradientUnits="userSpaceOnUse"><stop stop-color="#4facfe"/><stop offset="1" stop-color="#00f2fe"/></linearGradient></defs></svg>
-        <h2>Your reading room is ready.</h2>
-        <p>Drop EPUB files here or add one from your device. Nothing is uploaded.</p>
-        <label class="empty-add-btn">Add Your First Book</label>
+      <h2 class="section-title">3. Multi-Color Highlight Markers</h2>
+      <p class="section-desc"><span class="idea-label">Active</span>Highlight text in Yellow, Mint Green, Sky Blue, and Soft Pink markers.</p>
+
+      <div class="marker-toolbar">
+        <span style="font-size:0.75rem; font-weight:700; color:var(--text-secondary);">Marker:</span>
+        <div class="color-swatch selected" style="background:#FDE047;" onclick="applyHighlight('#FDE047', this)"></div>
+        <div class="color-swatch" style="background:#86EFAC;" onclick="applyHighlight('#86EFAC', this)"></div>
+        <div class="color-swatch" style="background:#93C5FD;" onclick="applyHighlight('#93C5FD', this)"></div>
+        <div class="color-swatch" style="background:#FCA5A5;" onclick="applyHighlight('#FCA5A5', this)"></div>
+      </div>
+
+      <div class="sample-reader-box">
+        <p>Gatsby believed in the <span id="highlightable-text" style="background:#FDE047; padding:2px 4px; border-radius:3px;">green light, the orgastic future</span> that year by year recedes before us.</p>
       </div>
     </div>
+
+    <!-- 4. Update Notification Banner -->
     <div class="section">
-      <h2 class="section-title">6. Toast Notifications</h2>
-      <p class="section-desc"><span class="idea-label">IDEA 6</span>Non-intrusive toast notifications appear at the bottom center with a smooth slide-up animation.</p>
-      <div style="margin-top:20px;"><button id="show-toast-btn" class="modal-btn confirm">Show Toast</button></div>
+      <h2 class="section-title">4. In-App Update Notification</h2>
+      <p class="section-desc"><span class="idea-label">Planned</span>Auto-update prompt using a custom DOM element instead of native OS dialogs.</p>
+
+      <div class="demo-viewport" id="demo-viewport">
+        <!-- Mock app window chrome -->
+        <div class="demo-app-chrome">
+          <span></span><span></span><span></span>
+        </div>
+
+        <!-- Mock reader content -->
+        <div class="demo-reader-mock">
+          <p>Sir Walter Elliot, of Kellynch Hall, in Somersetshire,</p>
+          <p>was a man who, for his own amusement, never took</p>
+          <p>up any book but the Baronetage; there he found</p>
+          <p class="demo-accent">occupation for an idle hour, and consolation in a</p>
+          <p>distressed one; there his faculties were roused into</p>
+          <p>admiration and respect, by contemplating the limited</p>
+          <p>remnant of the earliest patents...</p>
+        </div>
+
+        <!-- The update banner (initially hidden) -->
+        <div class="update-banner-demo" id="update-banner-demo">
+          <div class="update-banner-demo-inner">
+            <div class="update-banner-demo-left">
+              <div class="update-banner-demo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                </svg>
+              </div>
+              <div class="update-banner-demo-text">
+                <div class="update-banner-demo-title">
+                  A new version of BookHaven is available!
+                  <span class="version-tag">(1.0.6 → 1.0.7)</span>
+                </div>
+                <div class="update-banner-demo-subtitle">
+                  Would you like to install it now? We'll reopen your windows and tabs for you.
+                </div>
+              </div>
+            </div>
+            <button class="update-banner-demo-close" id="demo-banner-close" aria-label="Dismiss">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          <div class="update-banner-demo-actions">
+            <button class="update-banner-demo-btn update-banner-demo-later" id="demo-banner-later">Remind me later</button>
+            <button class="update-banner-demo-btn update-banner-demo-install" id="demo-banner-install">Install now</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="demo-trigger-btn" id="demo-show-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+        </svg>
+        Show notification
+      </button>
+      <div class="demo-annotation">The banner slides up from the bottom-right of the viewport. The dark card stays consistent across all app themes (light, dark, sepia).</div>
     </div>
+
+    <!-- 5. Page Turn Animation -->
+    <div class="section">
+      <h2 class="section-title">5. Page Turn Animation</h2>
+      <p class="section-desc"><span class="idea-label">Idea</span>Smooth slide transitions between pages with a subtle 3D perspective effect, replacing the instant content swap.</p>
+
+      <div class="page-turn-demo">
+        <div class="page-turn-stage">
+          <div class="page-turn-card" id="page-card">
+            <p id="page-text">Gatsby believed in the green light, the orgastic future that year by year recedes before us. It eluded us then, but that's no matter—to-morrow we will run faster, stretch out our arms farther...</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-turn-controls">
+        <button class="page-turn-btn" id="page-prev-demo">&#8592;</button>
+        <span class="page-turn-page-num" id="page-num-demo">Page 1 / 4</span>
+        <button class="page-turn-btn" id="page-next-demo">&#8594;</button>
+      </div>
+      <div class="demo-annotation">Each page slides out while the next slides in with a slight Y rotation, giving a natural reading feel. Arrow key navigation already works in-app — this animation would make it visual.</div>
+    </div>
+
+    <!-- 6. Focus Mode -->
+    <div class="section">
+      <h2 class="section-title">6. Focus Mode (Distraction-Free Reading)</h2>
+      <p class="section-desc"><span class="idea-label">Idea</span>One-click toggle strips away all chrome — header, footer, sidebar buttons — leaving only the text, centered and spacious.</p>
+
+      <div class="focus-demo" id="focus-demo">
+        <div class="focus-demo-header">
+          <div class="focus-demo-header-left">
+            <span></span><span></span><span></span>
+            <span class="focus-demo-header-title">Chapter IV &middot; The Great Gatsby</span>
+          </div>
+          <span style="font-size:0.7rem; color:var(--text-muted);">Page 42 / 180</span>
+        </div>
+        <div class="focus-demo-body">
+          <p>On Sunday morning while church bells rang in the villages alongshore, the world and its mistress returned to Gatsby's house and twinkled hilariously on his lawn.</p>
+          <p style="margin-top:12px;">"He's a bootlegger," said the young ladies, moving somewhere between his cocktails and his flowers. "One time he killed a man who had found out that he was nephew to von Hindenburg and second cousin to the devil."</p>
+        </div>
+        <div class="focus-demo-footer">
+          <span>&#9733; 12 bookmarks</span>
+          <span>&#9998; 3 annotations</span>
+          <span>12 min left in chapter</span>
+        </div>
+        <button class="focus-toggle-btn" id="focus-toggle-demo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+            <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 007.92 12.446A9 9 0 1112 2.992z"/>
+          </svg>
+          Focus Mode
+        </button>
+      </div>
+      <div class="demo-annotation">Click "Focus Mode" — the header and footer slide away, text padding increases, and the background shifts to match the theme. Tap again to restore chrome.</div>
+    </div>
+
+    <!-- 7. Reading Time Estimator -->
+    <div class="section">
+      <h2 class="section-title">7. Reading Time Estimator</h2>
+      <p class="section-desc"><span class="idea-label">Idea</span>Shows estimated time remaining in the current chapter and the whole book, calculated from your actual reading speed (wpm).</p>
+
+      <div class="time-estimator-demo">
+        <div class="time-estimator-demo-content">
+          <p>Halfway down a by-street of one of our New England towns stands a rusty wooden house, with seven acutely peaked gables, facing towards various points of the compass, and a huge, clustered chimney in the midst.</p>
+          <p style="margin-top:10px; color:var(--text-secondary);">The street is probably one of the most ancient in town, and the house certainly the most ancient in the street; for the moss-grown and crumbling roof has the true antique aspect of the old French chateau—the trait of a time when domestic architecture was just beginning to feel the influence of a style of building which had not yet wholly merged into the commonplace.</p>
+        </div>
+        <div class="time-estimator-demo-footer">
+          <div class="reading-time-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+            </svg>
+            14 min left in chapter
+          </div>
+          <div class="reading-time-chip ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
+            </svg>
+            ~4.2 hrs left in book
+          </div>
+          <span style="font-size:0.75rem; color:var(--text-muted);">Based on your speed: 265 wpm</span>
+        </div>
+      </div>
+      <div class="demo-annotation">The chip updates dynamically as you read. Shorter chapters show tighter estimates. Helps you decide "just one more chapter" with confidence.</div>
+    </div>
+
+    <!-- 8. Quick Brightness & Filter Overlay -->
+    <div class="section">
+      <h2 class="section-title">8. Quick Brightness Overlay</h2>
+      <p class="section-desc"><span class="idea-label">Idea</span>A swipe-up tab at the bottom of the reader reveals a brightness dimmer and font-size slider — no need to open the full settings panel.</p>
+
+      <div class="brightness-demo" id="brightness-demo">
+        <div class="brightness-overlay" id="brightness-overlay"></div>
+        <div class="brightness-demo-reader">
+          <p>It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness...</p>
+        </div>
+        <button class="brightness-toggle-tab" id="brightness-toggle">&#9650; Quick Controls</button>
+        <div class="brightness-control" id="brightness-control-panel">
+          <span class="brightness-control-icon">&#9728;</span>
+          <input type="range" class="brightness-control-slider" id="brightness-slider" min="0" max="100" value="0">
+          <span class="brightness-control-icon" style="font-size:1.2rem;">&#9789;</span>
+        </div>
+      </div>
+      <div class="demo-annotation">Tap "Quick Controls" — the panel slides up with a brightness dimmer. The overlay darkens from 0% to 60% opacity. Could also include font-size + line-spacing shortcuts.</div>
+    </div>
+
   </div>
 
-  <div class="context-menu" id="context-menu">
-    <div class="context-menu-item" onclick="handleContextAction('read')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Read</div>
-    <div class="context-menu-item" onclick="handleContextAction('info')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Book Info</div>
-    <div class="context-menu-separator"></div>
-    <div class="context-menu-item danger" onclick="handleContextAction('delete')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>Delete</div>
-  </div>
-  <div class="modal-overlay" id="delete-modal">
-    <div class="modal">
-      <div class="modal-header"><h3>Remove Book</h3><div class="modal-close" onclick="closeModal('delete-modal')">x</div></div>
-      <div class="modal-body"><p>Are you sure you want to remove "The Alchemist" from your library? This action cannot be undone.</p></div>
-      <div class="modal-footer"><button class="modal-btn cancel" onclick="closeModal('delete-modal')">Cancel</button><button class="modal-btn confirm" onclick="closeModal('delete-modal')">Remove</button></div>
-    </div>
-  </div>
-  <div class="toast-container" id="toast-container"></div>
   <script>
     document.querySelectorAll('.theme-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -233,69 +872,105 @@
         document.body.setAttribute('data-theme', btn.dataset.theme);
       });
     });
-    const books = [
-      { id:1, title:'The Great Gatsby', author:'F. Scott Fitzgerald', progress:72, lastRead:'2 hours ago', cover:'#667eea' },
-      { id:2, title:'1984', author:'George Orwell', progress:35, lastRead:'Yesterday', cover:'#f093fb' },
-      { id:3, title:'To Kill a Mockingbird', author:'Harper Lee', progress:0, lastRead:'', cover:'#4facfe' },
-      { id:4, title:'The Alchemist', author:'Paulo Coelho', progress:91, lastRead:'3 days ago', cover:'#10b918' },
-      { id:5, title:'Brave New World', author:'Aldous Huxley', progress:15, lastRead:'Last week', cover:'#f59e0b' },
-      { id:6, title:'The Catcher in the Rye', author:'J.D. Salinger', progress:0, lastRead:'', cover:'#8b5cf6' },
-    ];
-    function renderBooks(containerId) {
-      const c = document.getElementById(containerId); if (!c) return; c.innerHTML = '';
-      books.forEach(b => {
-        const card = document.createElement('div'); card.className = 'book-card';
-        card.innerHTML = '<div class="book-cover-wrapper"><img src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 150\'%3E%3Crect width=\'100\' height=\'150\' fill=\''+b.cover+'\'/%3E%3Ctext x=\'50\' y=\'75\' fill=\'white\' font-size=\'7\' text-anchor=\'middle\'%3E'+b.title+'%3C/text%3E%3C/svg%3E" class="book-cover" alt="'+b.title+'"></div><div class="book-info"><div class="book-title">'+b.title+'</div><div class="book-author">'+b.author+'</div></div>';
-        c.appendChild(card);
+
+    function applyHighlight(color, swatch) {
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      swatch.classList.add('selected');
+      document.getElementById('highlightable-text').style.background = color;
+    }
+
+    // Update Notification Banner Demo
+    const banner = document.getElementById('update-banner-demo');
+    const showBtn = document.getElementById('demo-show-banner');
+    const closeBtn = document.getElementById('demo-banner-close');
+    const laterBtn = document.getElementById('demo-banner-later');
+    const installBtn = document.getElementById('demo-banner-install');
+
+    function hideBanner() {
+      banner.classList.remove('show');
+    }
+
+    showBtn.addEventListener('click', () => {
+      banner.classList.add('show');
+    });
+
+    closeBtn.addEventListener('click', hideBanner);
+    laterBtn.addEventListener('click', hideBanner);
+    installBtn.addEventListener('click', () => {
+      alert('Install now → sends IPC message "install-update" to main process → autoUpdater.quitAndInstall()');
+      hideBanner();
+    });
+
+    // Prevent banner from closing when clicking inside it
+    banner.addEventListener('click', (e) => e.stopPropagation());
+
+    // --- 5. Page Turn Animation ---
+    (function() {
+      const pages = [
+        'Gatsby believed in the green light, the orgastic future that year by year recedes before us. It eluded us then, but that\'s no matter—to-morrow we will run faster, stretch out our arms farther...',
+        'And one fine morning— So we beat on, boats against the current, borne back ceaselessly into the past. That was the way Gatsby felt about Daisy, and the way I felt about the East.',
+        'Most of the big shore places were closed now and there were hardly any lights except the shadowy, moving glow of a ferryboat across the Sound. And as the moon rose higher the inessential houses began to melt away.',
+        'He had come a long way to this blue lawn, and his dream must have seemed so close that he could hardly fail to grasp it. He did not know that it was already behind him.'
+      ];
+      let pageIdx = 0;
+      const card = document.getElementById('page-card');
+      const text = document.getElementById('page-text');
+      const num = document.getElementById('page-num-demo');
+
+      function goToPage(idx) {
+        idx = Math.max(0, Math.min(pages.length - 1, idx));
+        if (idx === pageIdx) return;
+        const next = idx > pageIdx;
+        card.classList.remove('exit-left', 'exit-right', 'enter-right', 'enter-left', 'enter-from-right', 'enter-from-left');
+        void card.offsetWidth;
+        card.classList.add(next ? 'exit-left' : 'exit-right');
+        setTimeout(() => {
+          text.textContent = pages[idx];
+          pageIdx = idx;
+          card.classList.remove('exit-left', 'exit-right');
+          card.classList.add(next ? 'enter-right' : 'enter-left');
+          void card.offsetWidth;
+          card.classList.remove(next ? 'enter-right' : 'enter-left');
+          card.classList.add(next ? 'enter-from-right' : 'enter-from-left');
+          num.textContent = `Page ${idx + 1} / ${pages.length}`;
+        }, 400);
+      }
+
+      document.getElementById('page-prev-demo').addEventListener('click', () => goToPage(pageIdx - 1));
+      document.getElementById('page-next-demo').addEventListener('click', () => goToPage(pageIdx + 1));
+    })();
+
+    // --- 6. Focus Mode ---
+    (function() {
+      const demo = document.getElementById('focus-demo');
+      const btn = document.getElementById('focus-toggle-demo');
+      btn.addEventListener('click', () => {
+        demo.classList.toggle('active');
+        btn.innerHTML = demo.classList.contains('active')
+          ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Exit Focus'
+          : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 007.92 12.446A9 9 0 1112 2.992z"/></svg> Focus Mode';
       });
-    }
-    function renderBooksWithProgress() {
-      const c = document.getElementById('book-grid-demo'); c.innerHTML = '';
-      books.forEach(b => {
-        const card = document.createElement('div'); card.className = 'book-card'; card.dataset.id = b.id;
-        const badge = b.progress>0?'<span class="continue-badge">Continue Reading</span>':'';
-        const meta = b.lastRead?'<div class="book-meta"><span class="book-last-read">'+b.lastRead+'</span></div>':'';
-        card.innerHTML = '<div class="book-cover-wrapper"><img src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 150\'%3E%3Crect width=\'100\' height=\'150\' fill=\''+b.cover+'\'/%3E%3Ctext x=\'50\' y=\'75\' fill=\'white\' font-size=\'7\' text-anchor=\'middle\'%3E'+b.title+'%3C/text%3E%3C/svg%3E" class="book-cover" alt="'+b.title+'">'+badge+'<div class="book-progress-bar"><div class="book-progress-fill" style="width:'+b.progress+'%"></div></div><div class="book-actions"><button class="book-action-btn" onclick="showContextMenuFromCard(event,'+b.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button></div></div><div class="book-info"><div class="book-title">'+b.title+'</div><div class="book-author">'+b.author+'</div>'+meta+'</div>';
-        card.addEventListener('contextmenu', (e) => { e.preventDefault(); showContextMenu(e.clientX, e.clientY, b); });
-        c.appendChild(card);
+    })();
+
+    // --- 8. Quick Brightness ---
+    (function() {
+      const toggle = document.getElementById('brightness-toggle');
+      const panel = document.getElementById('brightness-control-panel');
+      const slider = document.getElementById('brightness-slider');
+      const overlay = document.getElementById('brightness-overlay');
+      let isOpen = false;
+
+      toggle.addEventListener('click', () => {
+        isOpen = !isOpen;
+        panel.classList.toggle('show', isOpen);
+        toggle.innerHTML = isOpen ? '\u25BC Quick Controls' : '\u25B2 Quick Controls';
       });
-    }
-    function showContextMenu(x,y,book) {
-      const m=document.getElementById('context-menu');
-      m.style.left=x+'px'; m.style.top=y+'px'; m.classList.add('show');
-      setTimeout(()=>{document.addEventListener('click', closeContextMenu)},0);
-    }
-    function showContextMenuFromCard(e,id) {
-      e.stopPropagation();
-      showContextMenu(e.clientX, e.clientY, books.find(b=>b.id===id));
-    }
-    function closeContextMenu() { document.getElementById('context-menu').classList.remove('show'); document.removeEventListener('click', closeContextMenu); }
-    function handleContextAction(a) { document.getElementById('context-menu').classList.remove('show'); if(a==='delete') document.getElementById('delete-modal').classList.add('show'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-    document.getElementById('show-library-btn').addEventListener('click', ()=>{
-      const l=document.getElementById('library-view-demo'), r=document.getElementById('reader-view-demo');
-      l.classList.remove('active'); r.classList.remove('active'); l.classList.add('exit');
-      setTimeout(()=>{l.classList.remove('exit');l.classList.remove('active');r.classList.add('active')},400);
-    });
-    document.getElementById('show-reader-btn').addEventListener('click', ()=>{
-      const l=document.getElementById('library-view-demo'), r=document.getElementById('reader-view-demo');
-      r.classList.remove('active'); l.classList.remove('exit'); r.classList.add('exit');
-      setTimeout(()=>{r.classList.remove('exit');r.classList.remove('active');l.classList.add('active')},400);
-    });
-    document.getElementById('show-toast-btn').addEventListener('click', ()=>{
-      const t=document.createElement('div'); t.className='toast';
-      t.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg> Book added to your library!';
-      document.getElementById('toast-container').appendChild(t);
-      setTimeout(()=>{t.classList.add('fade-out');setTimeout(()=>t.remove(),300)},3000);
-    });
-    let hideTimer;
-    function resetHideTimer() {
-      clearTimeout(hideTimer);
-      document.getElementById('demo-header').classList.add('show'); document.getElementById('demo-footer').classList.add('show');
-      hideTimer=setTimeout(()=>{document.getElementById('demo-header').classList.remove('show');document.getElementById('demo-footer').classList.remove('show')},3000);
-    }
-    document.querySelector('.reader-area').closest('.reader-body').addEventListener('mousemove', resetHideTimer);
-    renderBooks('transition-book-grid'); renderBooksWithProgress();
+
+      slider.addEventListener('input', () => {
+        const val = parseInt(slider.value);
+        overlay.style.opacity = val / 100 * 0.6;
+      });
+    })();
   </script>
 </body>
 </html>

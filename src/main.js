@@ -49,7 +49,11 @@ const state = {
   searchQuery: '',
   annotations: [],
   bookmarks: [],
-  currentSelection: null
+  currentSelection: null,
+  sessionStart: null,
+  readingStats: null,
+  selectedHighlightColor: localStorage.getItem('bookhaven-hl-color') || '#FBF719',
+  pageTurnDirection: null
 };
 
 let justSelected = false;
@@ -156,6 +160,11 @@ async function init() {
   setupEventListeners();
   syncStyleButtons();
   await loadBooks();
+  loadReadingStats();
+  // Restore selected highlight color indicator
+  document.querySelectorAll('.hl-btn[data-color]').forEach(b => {
+    if (b.dataset.color === state.selectedHighlightColor) b.classList.add('active');
+  });
 }
 
 // -----------------------------------------------------------------------------
@@ -213,8 +222,12 @@ function setupEventListeners() {
 
   // Reader Events
   els.reader.backBtn.addEventListener('click', closeBook);
-  els.reader.prevBtn.addEventListener('click', () => state.rendition && state.rendition.prev());
-  els.reader.nextBtn.addEventListener('click', () => state.rendition && state.rendition.next());
+  els.reader.prevBtn.addEventListener('click', () => {
+    if (state.rendition) { state.pageTurnDirection = 'prev'; state.rendition.prev(); }
+  });
+  els.reader.nextBtn.addEventListener('click', () => {
+    if (state.rendition) { state.pageTurnDirection = 'next'; state.rendition.next(); }
+  });
   
   // Progress slider
   els.reader.progress.addEventListener('change', (e) => {
@@ -256,6 +269,35 @@ function setupEventListeners() {
   els.reader.settingsBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     els.settings.panel.classList.toggle('show');
+  });
+
+  // Focus Mode
+  const focusBtn = document.getElementById('focus-toggle');
+  const readerView = document.getElementById('reader-view');
+  focusBtn.addEventListener('click', () => {
+    readerView.classList.toggle('focus-mode');
+    focusBtn.classList.toggle('active');
+  });
+
+  // Brightness
+  const brightnessOverlay = document.getElementById('reader-brightness-overlay');
+  const brightnessSlider = document.getElementById('brightness-slider');
+  const brightnessToggle = document.getElementById('brightness-toggle');
+
+  brightnessSlider.addEventListener('input', () => {
+    const val = parseInt(brightnessSlider.value);
+    const opacity = val / 100 * 0.55;
+    brightnessOverlay.style.opacity = opacity;
+    brightnessToggle.classList.toggle('active', val > 0);
+  });
+
+  brightnessToggle.addEventListener('click', () => {
+    const panel = els.settings.panel;
+    panel.classList.toggle('show');
+    // Focus brightness slider when panel opens
+    if (panel.classList.contains('show')) {
+      setTimeout(() => brightnessSlider.focus(), 100);
+    }
   });
   
   document.querySelectorAll('.sidebar-close').forEach(btn => {
@@ -300,7 +342,11 @@ function setupEventListeners() {
         removeSelectedAnnotations();
       } else if (target.classList.contains('hl-underline')) {
         addUnderline();
-      } else {
+      } else if (target.dataset.color) {
+        state.selectedHighlightColor = target.dataset.color;
+        localStorage.setItem('bookhaven-hl-color', target.dataset.color);
+        els.annotations.btns.forEach(b => b.classList.remove('active'));
+        target.classList.add('active');
         addHighlight(target.dataset.color);
       }
     });
@@ -335,6 +381,14 @@ function setupEventListeners() {
   // Modals
   els.modals.bookInfoClose.addEventListener('click', () => {
     els.modals.bookInfo.classList.remove('show');
+  });
+
+  // Analytics
+  document.getElementById('analytics-btn').addEventListener('click', openAnalytics);
+  document.getElementById('analytics-modal-close').addEventListener('click', closeAnalytics);
+  document.getElementById('analytics-modal-close-btn').addEventListener('click', closeAnalytics);
+  document.getElementById('analytics-modal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeAnalytics();
   });
 }
 
@@ -465,6 +519,8 @@ function renderBooks() {
     card.className = 'book-card';
     card.dataset.id = book.id;
     
+    const pct = book.percentRead || 0;
+
     let coverHtml = '';
     if (book.coverUrl) {
       coverHtml = `<img src="${book.coverUrl}" class="book-cover" alt="Cover of ${book.title}" loading="lazy">`;
@@ -475,6 +531,7 @@ function renderBooks() {
     card.innerHTML = `
       <div class="book-cover-wrapper">
         ${coverHtml}
+        <div class="book-progress-bar"><div class="book-progress-fill" style="width:${pct}%"></div></div>
         <div class="book-actions">
           <button class="book-action-btn btn-info" title="Info">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -485,7 +542,7 @@ function renderBooks() {
       </div>
       <div class="book-info">
         <div class="book-title" title="${book.title}">${book.title}</div>
-        <div class="book-author">${book.author}</div>
+        <div class="book-author">${book.author}${pct > 0 ? ` &middot; ${pct}%` : ''}</div>
       </div>
     `;
     
@@ -642,6 +699,9 @@ async function openBook(id) {
     restoreAnnotations();
     state.bookmarks = await localforage.getItem(`book_bookmarks_${id}`) || [];
     renderBookmarks();
+
+    // Start reading session
+    state.sessionStart = Date.now();
     
     // Generate Locations for pagination
     const savedLocations = await localforage.getItem(`book_locations_${id}`);
@@ -717,6 +777,22 @@ async function openBook(id) {
 }
 
 function closeBook() {
+  // End reading session
+  if (state.sessionStart && state.rendition) {
+    const elapsed = Date.now() - state.sessionStart;
+    if (elapsed > 5000) {
+      const stats = loadReadingStats();
+      stats.totalReadMs += elapsed;
+      stats.sessions += 1;
+      const today = new Date().toISOString().slice(0, 10);
+      stats.lastReadDate = today;
+      stats.streakDays = calcStreak(stats.lastReadDate, stats.streakDays);
+      stats.weeklyMinutes = updateWeeklyMinutes(stats.weeklyMinutes, today, elapsed);
+      saveReadingStats(stats);
+    }
+    state.sessionStart = null;
+  }
+
   if (state.rendition) {
     state.rendition.destroy();
     state.currentBook.destroy();
@@ -730,6 +806,77 @@ function closeBook() {
   els.views.reader.classList.remove('active');
   els.views.library.classList.add('active');
   closeSidebars();
+}
+
+// -----------------------------------------------------------------------------
+// READING STATISTICS / ANALYTICS
+// -----------------------------------------------------------------------------
+function loadReadingStats() {
+  if (state.readingStats) return state.readingStats;
+  const saved = localStorage.getItem('bookhaven-reading-stats');
+  const defaults = {
+    totalReadMs: 0,
+    totalWordsRead: 0,
+    sessions: 0,
+    lastReadDate: null,
+    streakDays: 0,
+    weeklyMinutes: [0, 0, 0, 0, 0, 0, 0]
+  };
+  state.readingStats = saved ? { ...defaults, ...JSON.parse(saved) } : defaults;
+  return state.readingStats;
+}
+
+function saveReadingStats(stats) {
+  state.readingStats = stats;
+  localStorage.setItem('bookhaven-reading-stats', JSON.stringify(stats));
+}
+
+function calcStreak(lastDate, streak) {
+  const today = new Date().toISOString().slice(0, 10);
+  if (!lastDate) return 1;
+  const last = new Date(lastDate);
+  const diff = Math.round((new Date(today) - last) / 86400000);
+  if (diff === 0) return streak;
+  if (diff === 1) return streak + 1;
+  return 1;
+}
+
+function updateWeeklyMinutes(weekly, today, elapsedMs) {
+  const dayIndex = new Date(today).getDay();
+  const sundayIndex = dayIndex === 0 ? 6 : dayIndex - 1;
+  const mins = Math.round(elapsedMs / 60000);
+  weekly[sundayIndex] = (weekly[sundayIndex] || 0) + mins;
+  return weekly;
+}
+
+function openAnalytics() {
+  const stats = loadReadingStats();
+  const totalHours = (stats.totalReadMs / 3600000).toFixed(1);
+  const streakLabel = stats.streakDays === 1 ? '1 day' : `${stats.streakDays} days`;
+  const avgWpm = stats.totalReadMs > 0 && stats.totalWordsRead > 0
+    ? Math.round(stats.totalWordsRead / (stats.totalReadMs / 60000))
+    : 0;
+
+  document.getElementById('analytics-time').textContent = `${totalHours} hrs`;
+  document.getElementById('analytics-streak').textContent = streakLabel;
+  document.getElementById('analytics-speed').textContent = `${avgWpm} wpm`;
+
+  // Weekly chart
+  const chartEl = document.querySelector('.chart-container > div');
+  if (chartEl) {
+    const maxMin = Math.max(...stats.weeklyMinutes, 1);
+    const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    chartEl.innerHTML = dayLabels.map((label, i) => {
+      const barH = Math.max(4, (stats.weeklyMinutes[i] || 0) / maxMin * 80);
+      return `<div class="chart-bar-container"><div class="chart-bar" style="height:${barH}px;"></div><span class="chart-bar-label">${label}</span></div>`;
+    }).join('');
+  }
+
+  document.getElementById('analytics-modal').classList.add('show');
+}
+
+function closeAnalytics() {
+  document.getElementById('analytics-modal').classList.remove('show');
 }
 
 async function handleRelocated(location) {
@@ -746,14 +893,54 @@ async function handleRelocated(location) {
   const totalPages = state.currentBook.locations.total;
   const currentPage = Math.round(percent * totalPages) || 1;
   els.reader.location.textContent = `Page ${currentPage} / ${totalPages}`;
+
+  // Page turn animation
+  const dir = state.pageTurnDirection;
+  if (dir) {
+    els.reader.area.classList.remove('page-turn-next', 'page-turn-prev');
+    void els.reader.area.offsetWidth;
+    els.reader.area.classList.add(`page-turn-${dir}`);
+    state.pageTurnDirection = null;
+  }
+
+  // Reading time estimate
+  const stats = loadReadingStats();
+  const avgWpm = stats.totalReadMs > 50000 && stats.totalWordsRead > 0
+    ? Math.round(stats.totalWordsRead / (stats.totalReadMs / 60000))
+    : 250;
+  const remainingPages = totalPages - currentPage;
+  const minLeft = Math.round(remainingPages / avgWpm * 250);
+  const timeEl = document.getElementById('reading-time-estimate');
+  if (minLeft > 0 && minLeft < 600) {
+    timeEl.textContent = `~${minLeft} min left`;
+    timeEl.style.display = '';
+  } else if (minLeft >= 600) {
+    timeEl.textContent = `~${(minLeft / 60).toFixed(1)} hrs left`;
+    timeEl.style.display = '';
+  } else {
+    timeEl.style.display = 'none';
+  }
+
+  // Track words read (estimate ~250 words per page)
+  if (state.currentBookId && state.sessionStart) {
+    const stats = loadReadingStats();
+    const newWordsRead = Math.round(250);
+    stats.totalWordsRead = (stats.totalWordsRead || 0) + newWordsRead;
+    saveReadingStats(stats);
+  }
   
   // Update bookmark button active status
   updateBookmarkIconState();
 
-  // Save location
+  // Save location and reading progress
   const bookInfo = state.books.find(b => b.title === els.reader.title.textContent);
   if (bookInfo) {
     await localforage.setItem(`last_location_${bookInfo.id}`, location.start.cfi);
+    if (percentageStr > (bookInfo.percentRead || 0)) {
+      bookInfo.percentRead = percentageStr;
+      await localforage.setItem(`book_info_${bookInfo.id}`, bookInfo);
+      renderBooks();
+    }
   }
 }
 
@@ -1196,6 +1383,37 @@ function debounce(func, wait) {
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), wait);
   };
+}
+
+// -----------------------------------------------------------------------------
+// UPDATE NOTIFICATION BANNER
+// -----------------------------------------------------------------------------
+const updateBanner = document.getElementById('update-banner');
+if (updateBanner) {
+  const updateBannerTitle = document.getElementById('update-banner-title');
+  const updateBannerInstall = document.getElementById('update-banner-install');
+  const updateBannerLater = document.getElementById('update-banner-later');
+  const updateBannerClose = document.getElementById('update-banner-close');
+
+  if (window.electronAPI) {
+    window.electronAPI.onUpdateAvailable((info) => {
+      updateBannerTitle.textContent = `A new version of BookHaven is available! (${info.currentVersion} → ${info.version})`;
+      updateBanner.classList.add('show');
+    });
+
+    updateBannerInstall.addEventListener('click', () => {
+      updateBanner.classList.remove('show');
+      window.electronAPI.installUpdate();
+    });
+
+    const dismissUpdate = () => {
+      updateBanner.classList.remove('show');
+      window.electronAPI.dismissUpdate();
+    };
+
+    updateBannerLater.addEventListener('click', dismissUpdate);
+    updateBannerClose.addEventListener('click', dismissUpdate);
+  }
 }
 
 // Initialize on load
