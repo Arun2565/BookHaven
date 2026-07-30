@@ -21,20 +21,14 @@ const READER_FONT_CSS = [
 }
 
 .bookhaven-highlight {
-  fill-opacity: 0.55 !important;
-  mix-blend-mode: normal !important;
+  mix-blend-mode: multiply;
+}
+.theme-dark .bookhaven-highlight {
+  mix-blend-mode: screen;
 }
 .bookhaven-highlight rect {
   rx: 4px !important;
   ry: 4px !important;
-}
-
-.theme-dark .bookhaven-highlight rect {
-  fill-opacity: 0.28 !important;
-}
-
-.theme-sepia .bookhaven-highlight rect {
-  fill-opacity: 0.4 !important;
 }`;
 
 // App State
@@ -136,7 +130,17 @@ const els = {
     noteText: document.getElementById('note-text'),
     noteCancel: document.getElementById('note-cancel'),
     noteSave: document.getElementById('note-save'),
-    noteClose: document.getElementById('note-modal-close')
+    noteClose: document.getElementById('note-modal-close'),
+    exportBtn: document.getElementById('export-annotations-btn'),
+    exportModal: document.getElementById('export-modal'),
+    exportClose: document.getElementById('export-modal-close'),
+    exportCancel: document.getElementById('export-modal-cancel'),
+    exportConfirm: document.getElementById('export-modal-confirm'),
+    exportHighlights: document.getElementById('export-include-highlights'),
+    exportUnderlines: document.getElementById('export-include-underlines'),
+    exportNotes: document.getElementById('export-include-notes'),
+    exportChapters: document.getElementById('export-include-chapters'),
+    exportPreview: document.getElementById('export-preview-content')
   }
 };
 
@@ -238,6 +242,13 @@ function setupEventListeners() {
   els.reader.bookmarkBtn.addEventListener('click', toggleBookmark);
   els.reader.searchBtn.addEventListener('click', () => openSidebar('search'));
   els.reader.annotationsBtn.addEventListener('click', () => openSidebar('annotations'));
+  els.annotations.exportBtn.addEventListener('click', openExportModal);
+  els.annotations.exportClose.addEventListener('click', closeExportModal);
+  els.annotations.exportCancel.addEventListener('click', closeExportModal);
+  els.annotations.exportConfirm.addEventListener('click', doExportAnnotations);
+  els.annotations.exportModal.addEventListener('click', (e) => {
+    if (e.target === els.annotations.exportModal) closeExportModal();
+  });
   els.sidebars.searchGo.addEventListener('click', executeBookSearch);
   els.sidebars.searchInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') executeBookSearch();
@@ -808,7 +819,6 @@ async function toggleBookmark() {
     await saveBookmarks();
     renderBookmarks();
     updateBookmarkIconState();
-    showToast('Bookmark removed');
   } else {
     let percent = 0;
     if (state.currentBook.locations && state.currentBook.locations.total) {
@@ -830,7 +840,6 @@ async function toggleBookmark() {
     await saveBookmarks();
     renderBookmarks();
     updateBookmarkIconState();
-    showToast('Bookmark added');
   }
 }
 
@@ -853,6 +862,17 @@ function renderBookmarks() {
   [...state.bookmarks].sort((a, b) => b.createdAt - a.createdAt).forEach(bm => {
     const item = document.createElement('div');
     item.className = 'bookmark-item';
+
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    icon.setAttribute('viewBox', '0 0 24 24');
+    icon.setAttribute('width', '18');
+    icon.setAttribute('height', '18');
+    icon.setAttribute('aria-hidden', 'true');
+    icon.style.cssText = 'flex-shrink:0;margin-top:2px';
+    const iconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    iconPath.setAttribute('d', 'M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z');
+    iconPath.setAttribute('fill', '#3b82f6');
+    icon.appendChild(iconPath);
 
     const info = document.createElement('div');
     info.className = 'bookmark-info';
@@ -877,6 +897,7 @@ function renderBookmarks() {
       removeBookmark(bm.id);
     });
 
+    item.appendChild(icon);
     item.appendChild(info);
     item.appendChild(removeBtn);
 
@@ -896,7 +917,6 @@ async function removeBookmark(id) {
   await saveBookmarks();
   renderBookmarks();
   updateBookmarkIconState();
-  showToast('Bookmark removed');
 }
 
 async function executeBookSearch() {
@@ -1090,7 +1110,11 @@ function setupRenditionTheme() {
     });
   }
 
-  requestAnimationFrame(() => reRenderAnnotations());
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      reRenderAnnotations();
+    });
+  });
 }
 
 // -----------------------------------------------------------------------------
@@ -1131,10 +1155,11 @@ function toggleStyle(style) {
 
 function reRenderAnnotations() {
   if (!state.rendition) return;
-  state.annotations.filter(a => a.type === 'underline').forEach(a => {
-    state.rendition.annotations.remove(a.cfiRange, 'underline');
+  state.annotations.forEach(a => {
+    const renderType = a.type === 'underline' ? 'underline' : 'highlight';
+    state.rendition.annotations.remove(a.cfiRange, renderType);
   });
-  state.annotations.filter(a => a.type === 'underline').forEach(drawAnnotation);
+  state.annotations.forEach(drawAnnotation);
 }
 
 function showLoading(text = 'Loading...') {
@@ -1213,7 +1238,7 @@ function drawAnnotation(annotation) {
       annotationData(annotation),
       onClick,
       'bookhaven-highlight',
-      { fill: annotation.color, 'fill-opacity': annotation.type === 'note' ? '0.42' : '0.55' }
+      { fill: annotation.color, 'fill-opacity': '0.55', 'mix-blend-mode': state.theme === 'dark' ? 'screen' : 'multiply' }
     );
   }
 }
@@ -1258,12 +1283,10 @@ async function addAnnotation(type, color, note = '') {
 
 async function addHighlight(color) {
   await addAnnotation('highlight', color);
-  showToast('Highlight saved');
 }
 
 async function addUnderline() {
   await addAnnotation('underline', '#dc2626');
-  showToast('Underline saved');
 }
 
 async function removeSelectedAnnotations() {
@@ -1275,7 +1298,6 @@ async function removeSelectedAnnotations() {
   await saveAnnotations();
   renderAnnotations();
   clearSelection();
-  showToast('Annotation removed');
 }
 
 function renderAnnotations() {
@@ -1338,7 +1360,6 @@ async function removeAnnotation(id) {
   state.annotations = state.annotations.filter(item => item.id !== id);
   await saveAnnotations();
   renderAnnotations();
-  showToast('Annotation removed');
 }
 
 function openNoteModal() {
@@ -1365,5 +1386,161 @@ function saveNote() {
   if (!note) return;
   addAnnotation('note', '#fde68a', note);
   closeNoteModal();
-  showToast('Note saved');
+}
+
+// -----------------------------------------------------------------------------
+// EXPORT ANNOTATIONS
+// -----------------------------------------------------------------------------
+function openExportModal() {
+  if (!state.annotations || !state.annotations.length) {
+    showToast('No annotations to export');
+    return;
+  }
+  updateExportPreview();
+  els.annotations.exportModal.classList.add('show');
+}
+
+function closeExportModal() {
+  els.annotations.exportModal.classList.remove('show');
+}
+
+function updateExportPreview() {
+  const md = generateAnnotationsMarkdown(state.annotations, state.books.find(b => b.id === state.currentBookId));
+  els.annotations.exportPreview.innerHTML = renderMarkdownPreview(md);
+}
+
+function getAnnotationColorLabel(color) {
+  const map = {
+    '#FBF719': 'Yellow',
+    '#39FB19': 'Green',
+    '#1920FB': 'Blue',
+    '#FB198A': 'Pink',
+    '#dc2626': 'Red',
+    '#fde68a': 'Note'
+  };
+  return map[color] || '';
+}
+
+function generateAnnotationsMarkdown(annotations, bookInfo) {
+  const includeHighlights = els.annotations.exportHighlights.checked;
+  const includeUnderlines = els.annotations.exportUnderlines.checked;
+  const includeNotes = els.annotations.exportNotes.checked;
+  const includeChapters = els.annotations.exportChapters.checked;
+
+  let filtered = annotations.filter(a => {
+    if (a.type === 'highlight' && !includeHighlights) return false;
+    if (a.type === 'underline' && !includeUnderlines) return false;
+    if (a.type === 'note' && !includeNotes) return false;
+    return true;
+  });
+
+  if (!filtered.length) return 'No annotations match your filters.';
+
+  let lines = [];
+  let title = bookInfo ? `${bookInfo.title} — ${bookInfo.author}` : 'Annotations';
+  let count = filtered.length;
+  lines.push(`# ${title}`);
+  lines.push(`*Exported ${new Date().toLocaleDateString()} · ${count} ${count === 1 ? 'annotation' : 'annotations'}*`);
+  lines.push('');
+
+  let lastChapter = '';
+  let chapterNum = 0;
+
+  filtered.sort((a, b) => a.createdAt - b.createdAt);
+
+  filtered.forEach(a => {
+    const date = new Date(a.createdAt).toLocaleDateString();
+    const typeLabel = a.type === 'underline' ? 'Underline' : a.type === 'note' ? 'Note' : 'Highlight';
+    const colorLabel = getAnnotationColorLabel(a.color);
+
+    if (includeChapters && a.chapter && a.chapter !== lastChapter) {
+      lastChapter = a.chapter;
+      chapterNum++;
+      lines.push(`## ${a.chapter}${a.page ? ` (Page ${a.page})` : ''}`);
+      lines.push('');
+    }
+
+    let block = `> **${typeLabel}**`;
+    if (colorLabel) block += ` (${colorLabel})`;
+    block += ` — *${date}*`;
+
+    if (a.text) {
+      const textLines = a.text.split('\n').map(l => l.trim()).filter(Boolean);
+      textLines.forEach(l => {
+        block += `\n> ${l}`;
+      });
+    }
+
+    if (a.note) {
+      block += `\n>\n> **Note:** ${a.note}`;
+    }
+
+    lines.push(block);
+    lines.push('');
+  });
+
+  return lines.join('\n');
+}
+
+function renderMarkdownPreview(md) {
+  const lines = md.split('\n');
+  let html = '';
+  let inBlockquote = false;
+
+  lines.forEach(line => {
+    if (line.startsWith('# ')) {
+      if (inBlockquote) { html += '</div>'; inBlockquote = false; }
+      html += `<div class="md-h1">${line.slice(2)}</div>`;
+    } else if (line.startsWith('## ')) {
+      if (inBlockquote) { html += '</div>'; inBlockquote = false; }
+      html += `<div class="md-h2">${line.slice(3)}</div>`;
+    } else if (line.startsWith('*') && line.endsWith('*') && !line.startsWith('**')) {
+      if (inBlockquote) { html += '</div>'; inBlockquote = false; }
+      html += `<div class="md-italic">${line.slice(1, -1)}</div>`;
+    } else if (line.startsWith('> **')) {
+      const rest = line.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
+      if (!inBlockquote) { html += '<div class="md-blockquote">'; inBlockquote = true; }
+      html += `<div class="md-bq-header">${rest}</div>`;
+    } else if (line.startsWith('> **Note:**')) {
+      const noteText = line.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      html += `<div class="md-note">${noteText}</div>`;
+    } else if (line.startsWith('> ') && inBlockquote) {
+      html += `<div class="md-bq-text">${line.slice(2)}</div>`;
+    } else if (line.startsWith('>') && !line.slice(1).trim()) {
+      // Empty blockquote line - just spacing
+    } else if (line === '') {
+      if (inBlockquote) { html += '</div>'; inBlockquote = false; }
+    } else {
+      if (inBlockquote) { html += '</div>'; inBlockquote = false; }
+    }
+  });
+
+  if (inBlockquote) html += '</div>';
+  return html || '<p style="color:var(--text-secondary);font-style:italic;">Select at least one type above.</p>';
+}
+
+async function doExportAnnotations() {
+  if (!state.currentBookId || !state.annotations.length) {
+    showToast('No annotations to export');
+    closeExportModal();
+    return;
+  }
+
+  const bookInfo = state.books.find(b => b.id === state.currentBookId);
+  const md = generateAnnotationsMarkdown(state.annotations, bookInfo);
+  const sanitized = bookInfo ? bookInfo.title.replace(/[^\w\s-]/g, '').trim() : 'BookHaven';
+  const filename = `${sanitized}-Annotations.md`;
+
+  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  closeExportModal();
+  showToast(`Exported ${sanitized}-Annotations.md`);
 }
