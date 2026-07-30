@@ -50,6 +50,9 @@ const state = {
   annotations: [],
   bookmarks: [],
   currentSelection: null,
+  isLayoutRefreshing: false,
+  pendingNavigation: null,
+  layoutRefreshId: 0,
   sessionStart: null,
   readingStats: null,
   selectedHighlightColor: localStorage.getItem('bookhaven-hl-color') || '#FBF719'
@@ -77,14 +80,9 @@ const els = {
   },
   reader: {
     header: document.getElementById('reader-header'),
-    footer: document.getElementById('reader-footer'),
     backBtn: document.getElementById('reader-back-btn'),
     title: document.getElementById('reader-book-title'),
     area: document.getElementById('reader-area'),
-    prevBtn: document.getElementById('page-prev'),
-    nextBtn: document.getElementById('page-next'),
-    location: document.getElementById('reader-location'),
-    percent: document.getElementById('reader-percent'),
     tocBtn: document.getElementById('reader-toc-btn'),
     bookmarkBtn: document.getElementById('reader-bookmark-btn'),
     searchBtn: document.getElementById('reader-search-btn'),
@@ -106,6 +104,7 @@ const els = {
   },
   settings: {
     panel: document.getElementById('settings-panel'),
+    closeBtn: document.getElementById('settings-panel-close'),
     fontDec: document.getElementById('font-decrease'),
     fontInc: document.getElementById('font-increase'),
     fontVal: document.getElementById('font-size-value'),
@@ -220,20 +219,16 @@ function setupEventListeners() {
 
   // Reader Events
   els.reader.backBtn.addEventListener('click', closeBook);
-  els.reader.prevBtn.addEventListener('click', () => state.rendition && state.rendition.prev());
-  els.reader.nextBtn.addEventListener('click', () => state.rendition && state.rendition.next());
   
-  // UI Toggles
+  // A tap/click keeps the top controls available without covering the reading area.
   let uiVisible = true;
   els.reader.area.addEventListener('click', () => {
     uiVisible = !uiVisible;
     els.reader.header.classList.toggle('show', uiVisible);
-    els.reader.footer.classList.toggle('show', uiVisible);
   });
   
   // Start with UI visible
   els.reader.header.classList.add('show');
-  els.reader.footer.classList.add('show');
 
   // Sidebar toggles
   els.reader.tocBtn.addEventListener('click', () => openSidebar('toc'));
@@ -254,6 +249,9 @@ function setupEventListeners() {
   els.reader.settingsBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     els.settings.panel.classList.toggle('show');
+  });
+  els.settings.closeBtn.addEventListener('click', () => {
+    els.settings.panel.classList.remove('show');
   });
 
 
@@ -348,12 +346,12 @@ function setupEventListeners() {
     if (state.rendition) {
       if (e.key === 'ArrowLeft' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
         e.preventDefault();
-        state.rendition.prev();
+        navigateReader('prev');
         return;
       }
       if (e.key === 'ArrowRight' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
         e.preventDefault();
-        state.rendition.next();
+        navigateReader('next');
         return;
       }
     }
@@ -766,6 +764,22 @@ async function openBook(id) {
         contents.document.body.classList.remove('theme-light', 'theme-sepia', 'theme-dark');
         contents.document.body.classList.add(`theme-${state.theme}`);
       }
+
+      // Every EPUB section runs in its own iframe. A font change re-creates
+      // those frames, so keyboard navigation must be attached when each
+      // document loads rather than only to whichever iframe appeared first.
+      const chapterDocument = contents.document;
+      if (!chapterDocument || chapterDocument.documentElement.dataset.bookhavenNavListener) return;
+      chapterDocument.documentElement.dataset.bookhavenNavListener = 'true';
+      chapterDocument.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          navigateReader('prev');
+        } else if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          navigateReader('next');
+        }
+      });
     });
     
     // Setup Styling
@@ -830,16 +844,6 @@ async function openBook(id) {
       if (data?.annotationId) openSidebar('annotations');
     });
 
-    state.rendition.on('relocated', () => {
-      const iframe = els.reader.area.querySelector('iframe');
-      if (!iframe || iframe.dataset.navListener) return;
-      iframe.dataset.navListener = '1';
-      iframe.contentWindow.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') { e.preventDefault(); state.rendition.prev(); }
-        if (e.key === 'ArrowRight') { e.preventDefault(); state.rendition.next(); }
-      });
-    });
-    
     // Setup TOC
     setupTOC();
     renderAnnotations();
@@ -876,6 +880,8 @@ function closeBook() {
     state.currentBook = null;
     state.currentBookId = null;
     state.annotations = [];
+    state.isLayoutRefreshing = false;
+    state.pendingNavigation = null;
     state.bookmarks = [];
   }
   
@@ -959,33 +965,6 @@ function closeAnalytics() {
 async function handleRelocated(location) {
   if (!state.currentBook) return;
   
-  // Update progress
-  const percent = state.currentBook.locations.percentageFromCfi(location.start.cfi);
-  const percentageStr = Math.round(percent * 100);
-  
-  els.reader.percent.textContent = `${percentageStr}%`;
-  
-  // Page number estimation
-  const totalPages = state.currentBook.locations.total;
-  const currentPage = Math.round(percent * totalPages) || 1;
-  els.reader.location.textContent = `Page ${currentPage} / ${totalPages}`;
-
-  // Reading time estimate
-  const stats = loadReadingStats();
-  const avgWpm = stats.totalReadMs > 50000 && stats.totalWordsRead > 0
-    ? Math.round(stats.totalWordsRead / (stats.totalReadMs / 60000))
-    : 250;
-  const remainingPages = totalPages - currentPage;
-  const minLeft = Math.round(remainingPages / avgWpm * 250);
-  const timeEl = document.getElementById('reading-time-estimate');
-  const sepEl = document.querySelector('.reader-location-sep');
-  const show = minLeft > 0 && minLeft < 6000;
-  if (show) {
-    timeEl.textContent = minLeft < 600 ? `~${minLeft} min left` : `~${(minLeft / 60).toFixed(1)} hrs left`;
-  }
-  sepEl.style.display = show ? '' : 'none';
-  timeEl.style.display = show ? '' : 'none';
-
   // Track words read (estimate ~250 words per page)
   // Only count unique page visits within a session
   if (state.currentBookId && state.sessionStart) {
@@ -1257,6 +1236,7 @@ function applyTheme(themeName) {
   
   if (state.rendition) {
     setupRenditionTheme();
+    refreshReaderPagination();
   }
 }
 
@@ -1267,6 +1247,7 @@ function changeFontSize(delta) {
 
   if (state.rendition) {
     setupRenditionTheme();
+    refreshReaderPagination();
   }
 }
 
@@ -1280,6 +1261,7 @@ function changeFontFamily(font) {
   
   if (state.rendition) {
     setupRenditionTheme();
+    refreshReaderPagination();
   }
 }
 
@@ -1293,6 +1275,7 @@ function changeSpacing(spacing) {
   
   if (state.rendition) {
     setupRenditionTheme();
+    refreshReaderPagination();
   }
 }
 
@@ -1310,6 +1293,7 @@ function changeMargin(margin) {
     const paddingMap = { 'narrow': '0 20px', 'normal': '0 40px', 'wide': '0 80px' };
     const epubView = els.reader.area.querySelector('.epub-view');
     if (epubView) epubView.style.padding = paddingMap[margin];
+    refreshReaderPagination();
   }
 }
 
@@ -1429,6 +1413,52 @@ function toggleStyle(style) {
   localStorage.setItem(`bookhaven-${style}`, state[style]);
   syncStyleButtons();
   setupRenditionTheme();
+  refreshReaderPagination();
+}
+
+function navigateReader(direction) {
+  if (!state.rendition) return;
+
+  // A style change rebuilds the paginated chapter views. Remember a key press
+  // made during that short rebuild instead of asking EPUB.js to navigate stale
+  // page dimensions.
+  if (state.isLayoutRefreshing) {
+    state.pendingNavigation = direction;
+    return;
+  }
+
+  state.rendition[direction]().catch((error) => {
+    console.error(`Could not move to the ${direction} page`, error);
+  });
+}
+
+function refreshReaderPagination() {
+  const rendition = state.rendition;
+  const cfi = rendition?.currentLocation()?.start?.cfi;
+  if (!rendition || !cfi) return;
+
+  const refreshId = ++state.layoutRefreshId;
+  state.isLayoutRefreshing = true;
+
+  // Let the EPUB iframe apply its new font metrics before re-creating the
+  // paginated views at the same CFI.
+  requestAnimationFrame(() => requestAnimationFrame(async () => {
+    if (refreshId !== state.layoutRefreshId || rendition !== state.rendition) return;
+
+    try {
+      rendition.manager.clear();
+      await rendition.display(cfi);
+      reRenderAnnotations();
+    } catch (error) {
+      console.error('Could not refresh reader pagination', error);
+    } finally {
+      if (refreshId !== state.layoutRefreshId || rendition !== state.rendition) return;
+      state.isLayoutRefreshing = false;
+      const pendingDirection = state.pendingNavigation;
+      state.pendingNavigation = null;
+      if (pendingDirection) navigateReader(pendingDirection);
+    }
+  }));
 }
 
 function reRenderAnnotations() {
@@ -1442,6 +1472,10 @@ function reRenderAnnotations() {
 
 function showLoading(text = 'Loading...') {
   els.modals.loadingText.textContent = text;
+  // Restart the page turn every time the loader opens instead of revealing a
+  // hidden animation halfway through its cycle.
+  els.modals.loading.classList.remove('active');
+  void els.modals.loading.offsetWidth;
   els.modals.loading.classList.add('active');
 }
 

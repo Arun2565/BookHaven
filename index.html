@@ -190,30 +190,8 @@
 
     <!-- Reader Body -->
     <div class="reader-body" id="reader-body">
-      <button class="page-nav-btn page-prev" id="page-prev" title="Previous page" aria-label="Previous page">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M15 18l-6-6 6-6" />
-        </svg>
-      </button>
       <div class="reader-area" id="reader-area"></div>
-      <button class="page-nav-btn page-next" id="page-next" title="Next page" aria-label="Next page">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M9 18l6-6-6-6" />
-        </svg>
-      </button>
     </div>
-
-    <!-- Reader Bottom Bar -->
-    <footer class="reader-footer" id="reader-footer">
-      <div class="reader-footer-inner">
-        <div class="reader-location-group">
-          <span class="reader-location" id="reader-location">Page 1</span>
-          <span class="reader-location-sep">&middot;</span>
-          <span class="reader-location" id="reading-time-estimate"></span>
-        </div>
-        <span class="reader-percent" id="reader-percent">0%</span>
-      </div>
-    </footer>
 
     <!-- TOC Sidebar -->
     <aside class="sidebar toc-sidebar" id="toc-sidebar" aria-label="Table of contents">
@@ -291,6 +269,14 @@
 
     <!-- Settings Panel -->
     <div class="settings-panel" id="settings-panel" role="dialog" aria-label="Reading settings" aria-modal="true">
+      <div class="settings-panel-header">
+        <span>Reading settings</span>
+        <button class="settings-panel-close" id="settings-panel-close" type="button" aria-label="Close reading settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
       <div class="settings-section">
         <label class="settings-label" id="font-size-label">Font Size</label>
         <div class="font-size-controls" role="group" aria-labelledby="font-size-label">
@@ -520,14 +506,13 @@
   <!-- ======================== LOADING ======================== -->
   <div class="loading-overlay" id="loading-overlay" role="alert" aria-live="assertive">
     <div class="loading-spinner">
-      <div class="book-flip-container">
+      <div class="book-flip-container" aria-hidden="true">
         <div class="book-flip-spine"></div>
         <div class="book-flip-left"></div>
         <div class="book-flip-right"></div>
-        <div class="book-flip-page"></div>
-        <div class="book-flip-page" style="animation-delay: 0.45s"></div>
-        <div class="book-flip-page" style="animation-delay: 0.9s"></div>
-        <div class="book-flip-page" style="animation-delay: 1.35s"></div>
+        <div class="book-flip-page page-one"></div>
+        <div class="book-flip-page page-two"></div>
+        <div class="book-flip-page page-three"></div>
         <div class="book-flip-shadow"></div>
       </div>
       <p class="loading-text" id="loading-text">Loading…</p>
