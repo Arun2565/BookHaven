@@ -39,7 +39,7 @@ app.whenReady().then(() => {
   createWindow();
 
   if (!isDevelopment) {
-    autoUpdater.disableSignatureVerification = true;
+    // Signature verification is enabled by default (disableSignatureVerification = false)
     const fs = require('node:fs');
     const logFile = path.join(app.getPath('userData'), 'updater-log.txt');
     

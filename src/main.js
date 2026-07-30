@@ -52,8 +52,7 @@ const state = {
   currentSelection: null,
   sessionStart: null,
   readingStats: null,
-  selectedHighlightColor: localStorage.getItem('bookhaven-hl-color') || '#FBF719',
-  pageTurnDirection: null
+  selectedHighlightColor: localStorage.getItem('bookhaven-hl-color') || '#FBF719'
 };
 
 let justSelected = false;
@@ -86,7 +85,6 @@ const els = {
     nextBtn: document.getElementById('page-next'),
     location: document.getElementById('reader-location'),
     percent: document.getElementById('reader-percent'),
-    progress: document.getElementById('reader-progress'),
     tocBtn: document.getElementById('reader-toc-btn'),
     bookmarkBtn: document.getElementById('reader-bookmark-btn'),
     searchBtn: document.getElementById('reader-search-btn'),
@@ -222,22 +220,9 @@ function setupEventListeners() {
 
   // Reader Events
   els.reader.backBtn.addEventListener('click', closeBook);
-  els.reader.prevBtn.addEventListener('click', () => {
-    if (state.rendition) { state.pageTurnDirection = 'prev'; state.rendition.prev(); }
-  });
-  els.reader.nextBtn.addEventListener('click', () => {
-    if (state.rendition) { state.pageTurnDirection = 'next'; state.rendition.next(); }
-  });
+  els.reader.prevBtn.addEventListener('click', () => state.rendition && state.rendition.prev());
+  els.reader.nextBtn.addEventListener('click', () => state.rendition && state.rendition.next());
   
-  // Progress slider
-  els.reader.progress.addEventListener('change', (e) => {
-    if (state.currentBook && state.rendition) {
-      const percentage = e.target.value / 100;
-      const cfi = state.currentBook.locations.cfiFromPercentage(percentage);
-      if (cfi) state.rendition.display(cfi);
-    }
-  });
-
   // UI Toggles
   let uiVisible = true;
   els.reader.area.addEventListener('click', () => {
@@ -271,35 +256,7 @@ function setupEventListeners() {
     els.settings.panel.classList.toggle('show');
   });
 
-  // Focus Mode
-  const focusBtn = document.getElementById('focus-toggle');
-  const readerView = document.getElementById('reader-view');
-  focusBtn.addEventListener('click', () => {
-    readerView.classList.toggle('focus-mode');
-    focusBtn.classList.toggle('active');
-  });
 
-  // Brightness
-  const brightnessOverlay = document.getElementById('reader-brightness-overlay');
-  const brightnessSlider = document.getElementById('brightness-slider');
-  const brightnessToggle = document.getElementById('brightness-toggle');
-
-  brightnessSlider.addEventListener('input', () => {
-    const val = parseInt(brightnessSlider.value);
-    const opacity = val / 100 * 0.55;
-    brightnessOverlay.style.opacity = opacity;
-    brightnessToggle.classList.toggle('active', val > 0);
-  });
-
-  brightnessToggle.addEventListener('click', () => {
-    const panel = els.settings.panel;
-    panel.classList.toggle('show');
-    // Focus brightness slider when panel opens
-    if (panel.classList.contains('show')) {
-      setTimeout(() => brightnessSlider.focus(), 100);
-    }
-  });
-  
   document.querySelectorAll('.sidebar-close').forEach(btn => {
     btn.addEventListener('click', closeSidebars);
   });
@@ -310,7 +267,10 @@ function setupEventListeners() {
   els.settings.fontInc.addEventListener('click', () => changeFontSize(10));
   
   els.settings.fontOpts.forEach(opt => {
-    opt.addEventListener('click', (e) => changeFontFamily(e.target.dataset.font));
+    opt.addEventListener('click', (e) => {
+      changeFontFamily(e.currentTarget.dataset.font);
+      els.settings.panel.classList.remove('show');
+    });
   });
   
   els.settings.themeOpts.forEach(btn => {
@@ -364,17 +324,44 @@ function setupEventListeners() {
     }
   });
   
-  // Keyboard Navigation (only library search and Escape on parent document)
+  // Keyboard Navigation
   document.addEventListener('keydown', (e) => {
+    // Ctrl+K for search (anywhere)
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      if (state.rendition) {
+        openSidebar('search');
+      } else {
+        els.library.searchInput.focus();
+      }
+      return;
+    }
+
+    // Library search
     if (!state.rendition && e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
       e.preventDefault();
       els.library.searchInput.focus();
       return;
     }
 
+    // Arrow keys in reader (document-level so it works even when iframe hasn't focused)
+    if (state.rendition) {
+      if (e.key === 'ArrowLeft' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        e.preventDefault();
+        state.rendition.prev();
+        return;
+      }
+      if (e.key === 'ArrowRight' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        e.preventDefault();
+        state.rendition.next();
+        return;
+      }
+    }
+
     if (e.key === 'Escape') {
       closeSidebars();
       els.settings.panel.classList.remove('show');
+      if (state.rendition) closeBook();
     }
   });
 
@@ -476,6 +463,8 @@ async function handleFileUpload(e) {
   if (successCount > 0) {
     showToast(`Successfully imported ${successCount} book(s)`);
     renderBooks();
+  } else {
+    showToast('No books were imported. Check file format.');
   }
 }
 
@@ -521,30 +510,65 @@ function renderBooks() {
     
     const pct = book.percentRead || 0;
 
-    let coverHtml = '';
-    if (book.coverUrl) {
-      coverHtml = `<img src="${book.coverUrl}" class="book-cover" alt="Cover of ${book.title}" loading="lazy">`;
-    } else {
-      coverHtml = `<div class="book-cover-placeholder">${book.title.substring(0, 2).toUpperCase()}</div>`;
+    // Build the card with DOM APIs to avoid XSS via EPUB metadata
+    const wrapper = document.createElement('div');
+    wrapper.className = 'book-cover-wrapper';
+
+    if (pct > 0) {
+      const badge = document.createElement('span');
+      badge.className = 'continue-badge';
+      badge.textContent = 'Continue';
+      wrapper.appendChild(badge);
     }
-    
-    card.innerHTML = `
-      <div class="book-cover-wrapper">
-        ${coverHtml}
-        <div class="book-progress-bar"><div class="book-progress-fill" style="width:${pct}%"></div></div>
-        <div class="book-actions">
-          <button class="book-action-btn btn-info" title="Info">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-      <div class="book-info">
-        <div class="book-title" title="${book.title}">${book.title}</div>
-        <div class="book-author">${book.author}${pct > 0 ? ` &middot; ${pct}%` : ''}</div>
-      </div>
-    `;
+
+    if (book.coverUrl) {
+      const img = document.createElement('img');
+      img.src = book.coverUrl;
+      img.className = 'book-cover';
+      img.alt = `Cover of ${book.title}`;
+      img.loading = 'lazy';
+      wrapper.appendChild(img);
+    } else {
+      const ph = document.createElement('div');
+      ph.className = 'book-cover-placeholder';
+      ph.textContent = book.title.substring(0, 2).toUpperCase();
+      wrapper.appendChild(ph);
+    }
+
+    const progressBar = document.createElement('div');
+    progressBar.className = 'book-progress-bar';
+    const progressFill = document.createElement('div');
+    progressFill.className = 'book-progress-fill';
+    progressFill.style.width = `${pct}%`;
+    progressBar.appendChild(progressFill);
+    wrapper.appendChild(progressBar);
+
+    const actions = document.createElement('div');
+    actions.className = 'book-actions';
+    let infoBtn = document.createElement('button');
+    infoBtn.className = 'book-action-btn btn-info';
+    infoBtn.title = 'Info';
+    infoBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>`;
+    actions.appendChild(infoBtn);
+    wrapper.appendChild(actions);
+
+    card.appendChild(wrapper);
+
+    const info = document.createElement('div');
+    info.className = 'book-info';
+
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'book-title';
+    titleDiv.textContent = book.title;
+    titleDiv.title = book.title;
+    info.appendChild(titleDiv);
+
+    const authorDiv = document.createElement('div');
+    authorDiv.className = 'book-author';
+    authorDiv.textContent = book.author + (pct > 0 ? ` · ${pct}%` : '');
+    info.appendChild(authorDiv);
+
+    card.appendChild(info);
     
     // Read on click
     card.addEventListener('click', (e) => {
@@ -552,8 +576,8 @@ function renderBooks() {
       openBook(book.id);
     });
     
-    // Info button
-    const infoBtn = card.querySelector('.btn-info');
+    // Info button (infoBtn already declared above)
+    infoBtn = card.querySelector('.btn-info');
     infoBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       showBookInfo(book);
@@ -579,53 +603,105 @@ function toggleViewMode() {
 }
 
 function showBookInfo(book) {
-  const coverHtml = book.coverUrl 
-    ? `<img src="${book.coverUrl}" class="book-info-cover" alt="Cover">`
-    : `<div class="book-info-cover" style="height: 150px; background: #ddd; display: flex; align-items:center; justify-content:center;">No Cover</div>`;
-    
-  const bgStyle = book.coverUrl ? `background-image: url(${book.coverUrl})` : 'background-color: var(--accent-color)';
-
   const dateAdded = new Date(book.addedAt).toLocaleDateString();
 
-  els.modals.bookInfoContent.innerHTML = `
-    <div class="book-info-header">
-      <div class="book-info-bg" style="${bgStyle}"></div>
-      <div class="book-info-header-content">
-        ${coverHtml}
-        <div class="book-info-titles">
-          <h2>${book.title}</h2>
-          <p>${book.author}</p>
-        </div>
-      </div>
-    </div>
-    <div class="book-info-details">
-      <div class="book-metadata">
-        <div class="meta-item">
-          <span class="meta-label">Added</span>
-          <span class="meta-value">${dateAdded}</span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Format</span>
-          <span class="meta-value">EPUB</span>
-        </div>
-      </div>
-      ${book.description ? `<div class="book-description">${book.description}</div>` : ''}
-    </div>
-    <div class="book-info-actions">
-      <button class="read-btn" id="modal-read-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-        </svg>
-        Read Now
-      </button>
-      <button class="delete-btn" id="modal-delete-btn" title="Remove Book">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-          <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
-        </svg>
-      </button>
-    </div>
-  `;
+  // Build modal content with DOM APIs — never innerHTML with user data
+  els.modals.bookInfoContent.innerHTML = '';
+
+  // --- Header ---
+  const header = document.createElement('div');
+  header.className = 'book-info-header';
+
+  const bg = document.createElement('div');
+  bg.className = 'book-info-bg';
+  if (book.coverUrl) {
+    bg.style.backgroundImage = `url(${book.coverUrl})`;
+  } else {
+    bg.style.backgroundColor = 'var(--accent-color)';
+  }
+  header.appendChild(bg);
+
+  const headerContent = document.createElement('div');
+  headerContent.className = 'book-info-header-content';
+
+  if (book.coverUrl) {
+    const img = document.createElement('img');
+    img.src = book.coverUrl;
+    img.className = 'book-info-cover';
+    img.alt = 'Cover';
+    headerContent.appendChild(img);
+  } else {
+    const noCover = document.createElement('div');
+    noCover.className = 'book-info-cover';
+    noCover.style.cssText = 'height:150px;background:#ddd;display:flex;align-items:center;justify-content:center';
+    noCover.textContent = 'No Cover';
+    headerContent.appendChild(noCover);
+  }
+
+  const titles = document.createElement('div');
+  titles.className = 'book-info-titles';
+  const titleEl = document.createElement('h2');
+  titleEl.textContent = book.title;
+  titles.appendChild(titleEl);
+  const authorEl = document.createElement('p');
+  authorEl.textContent = book.author;
+  titles.appendChild(authorEl);
+  headerContent.appendChild(titles);
+  header.appendChild(headerContent);
+  els.modals.bookInfoContent.appendChild(header);
+
+  // --- Details ---
+  const details = document.createElement('div');
+  details.className = 'book-info-details';
+
+  const metadata = document.createElement('div');
+  metadata.className = 'book-metadata';
+
+  const addMeta = (label, value) => {
+    const item = document.createElement('div');
+    item.className = 'meta-item';
+    const lbl = document.createElement('span');
+    lbl.className = 'meta-label';
+    lbl.textContent = label;
+    const val = document.createElement('span');
+    val.className = 'meta-value';
+    val.textContent = value;
+    item.appendChild(lbl);
+    item.appendChild(val);
+    metadata.appendChild(item);
+  };
+  addMeta('Added', dateAdded);
+  addMeta('Format', 'EPUB');
+
+  details.appendChild(metadata);
+
+  if (book.description) {
+    const desc = document.createElement('div');
+    desc.className = 'book-description';
+    desc.textContent = book.description;
+    details.appendChild(desc);
+  }
+
+  els.modals.bookInfoContent.appendChild(details);
+
+  // --- Actions ---
+  const actions = document.createElement('div');
+  actions.className = 'book-info-actions';
+
+  const readBtn = document.createElement('button');
+  readBtn.className = 'read-btn';
+  readBtn.id = 'modal-read-btn';
+  readBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg> Read Now';
+  actions.appendChild(readBtn);
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'delete-btn';
+  deleteBtn.id = 'modal-delete-btn';
+  deleteBtn.title = 'Remove Book';
+  deleteBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/></svg>';
+  actions.appendChild(deleteBtn);
+
+  els.modals.bookInfoContent.appendChild(actions);
   
   els.modals.bookInfo.classList.add('show');
   
@@ -832,10 +908,11 @@ function saveReadingStats(stats) {
 }
 
 function calcStreak(lastDate, streak) {
-  const today = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   if (!lastDate) return 1;
-  const last = new Date(lastDate);
-  const diff = Math.round((new Date(today) - last) / 86400000);
+  const last = new Date(lastDate + 'T00:00:00');
+  const diff = Math.round((new Date(today + 'T00:00:00') - last) / 86400000);
   if (diff === 0) return streak;
   if (diff === 1) return streak + 1;
   return 1;
@@ -886,22 +963,12 @@ async function handleRelocated(location) {
   const percent = state.currentBook.locations.percentageFromCfi(location.start.cfi);
   const percentageStr = Math.round(percent * 100);
   
-  els.reader.progress.value = percentageStr;
   els.reader.percent.textContent = `${percentageStr}%`;
   
   // Page number estimation
   const totalPages = state.currentBook.locations.total;
   const currentPage = Math.round(percent * totalPages) || 1;
   els.reader.location.textContent = `Page ${currentPage} / ${totalPages}`;
-
-  // Page turn animation
-  const dir = state.pageTurnDirection;
-  if (dir) {
-    els.reader.area.classList.remove('page-turn-next', 'page-turn-prev');
-    void els.reader.area.offsetWidth;
-    els.reader.area.classList.add(`page-turn-${dir}`);
-    state.pageTurnDirection = null;
-  }
 
   // Reading time estimate
   const stats = loadReadingStats();
@@ -911,29 +978,34 @@ async function handleRelocated(location) {
   const remainingPages = totalPages - currentPage;
   const minLeft = Math.round(remainingPages / avgWpm * 250);
   const timeEl = document.getElementById('reading-time-estimate');
-  if (minLeft > 0 && minLeft < 600) {
-    timeEl.textContent = `~${minLeft} min left`;
-    timeEl.style.display = '';
-  } else if (minLeft >= 600) {
-    timeEl.textContent = `~${(minLeft / 60).toFixed(1)} hrs left`;
-    timeEl.style.display = '';
-  } else {
-    timeEl.style.display = 'none';
+  const sepEl = document.querySelector('.reader-location-sep');
+  const show = minLeft > 0 && minLeft < 6000;
+  if (show) {
+    timeEl.textContent = minLeft < 600 ? `~${minLeft} min left` : `~${(minLeft / 60).toFixed(1)} hrs left`;
   }
+  sepEl.style.display = show ? '' : 'none';
+  timeEl.style.display = show ? '' : 'none';
 
   // Track words read (estimate ~250 words per page)
+  // Only count unique page visits within a session
   if (state.currentBookId && state.sessionStart) {
-    const stats = loadReadingStats();
-    const newWordsRead = Math.round(250);
-    stats.totalWordsRead = (stats.totalWordsRead || 0) + newWordsRead;
-    saveReadingStats(stats);
+    if (!state.visitedCfi) state.visitedCfi = new Set();
+    const cfiKey = location.start.cfi.replace(/!$/, '');
+    if (!state.visitedCfi.has(cfiKey)) {
+      state.visitedCfi.add(cfiKey);
+      const stats = loadReadingStats();
+      stats.totalWordsRead = (stats.totalWordsRead || 0) + Math.round(250);
+      saveReadingStats(stats);
+    }
   }
   
   // Update bookmark button active status
   updateBookmarkIconState();
 
   // Save location and reading progress
-  const bookInfo = state.books.find(b => b.title === els.reader.title.textContent);
+  const bookInfo = state.currentBookId
+    ? state.books.find(b => b.id === state.currentBookId)
+    : state.books.find(b => b.title === els.reader.title.textContent);
   if (bookInfo) {
     await localforage.setItem(`last_location_${bookInfo.id}`, location.start.cfi);
     if (percentageStr > (bookInfo.percentRead || 0)) {
@@ -1127,7 +1199,10 @@ async function executeBookSearch() {
     const flatResults = results.flat();
 
     if (!flatResults.length) {
-      container.innerHTML = `<p class="empty-sidebar">No results for "${query}"</p>`;
+      const noResP = document.createElement('p');
+      noResP.className = 'empty-sidebar';
+      noResP.textContent = `No results for "${query}"`;
+      container.appendChild(noResP);
       return;
     }
 
@@ -1139,7 +1214,17 @@ async function executeBookSearch() {
       const excerpt = document.createElement('div');
       excerpt.className = 'search-result-excerpt';
       const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-      excerpt.innerHTML = res.excerpt.replace(regex, '<mark>$1</mark>');
+      // Build highlighting with DOM APIs — no innerHTML from EPUB text
+      const parts = res.excerpt.split(regex);
+      for (let i = 0; i < parts.length; i++) {
+        if (i % 2 === 1) {
+          const mark = document.createElement('mark');
+          mark.textContent = parts[i];
+          excerpt.appendChild(mark);
+        } else {
+          excerpt.appendChild(document.createTextNode(parts[i]));
+        }
+      }
 
       div.appendChild(excerpt);
 
@@ -1314,14 +1399,20 @@ function openSidebar(id) {
                  id === 'annotations' ? els.sidebars.annotations :
                  els.sidebars.search;
   
+  if (id === 'search') {
+    target.classList.add('centered');
+    setTimeout(() => document.getElementById('book-search-input').focus(), 100);
+  }
   target.classList.add('open');
   els.sidebars.overlay.classList.add('show');
 }
 
 function closeSidebars() {
+  const searchSidebar = els.sidebars.search;
+  searchSidebar.classList.remove('centered');
   els.sidebars.toc.classList.remove('open');
   els.sidebars.bookmarks.classList.remove('open');
-  els.sidebars.search.classList.remove('open');
+  searchSidebar.classList.remove('open');
   els.sidebars.annotations.classList.remove('open');
   els.sidebars.overlay.classList.remove('show');
 }
@@ -1361,13 +1452,9 @@ function hideLoading() {
 function showToast(message) {
   const toast = document.createElement('div');
   toast.className = 'toast';
-  toast.innerHTML = `
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
-      <path d="M9 12l2 2 4-4"/>
-    </svg>
-    ${message}
-  `;
+  // SVG icon is fully static — safe to use innerHTML
+  toast.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg>';
+  toast.appendChild(document.createTextNode(' ' + message));
   
   els.toastContainer.appendChild(toast);
   
@@ -1475,6 +1562,27 @@ async function addAnnotation(type, color, note = '') {
   if (!state.currentSelection || !state.rendition) return;
 
   const { cfiRange } = state.currentSelection;
+
+  // Look up current chapter from TOC
+  let chapter = '';
+  try {
+    const toc = state.currentBook?.navigation?.toc;
+    if (toc && toc.length) {
+      const docMatch = cfiRange.match(/\/[46]\/[^!]+/);
+      if (docMatch) {
+        const docPath = docMatch[0];
+        let bestLen = 0;
+        toc.forEach(item => {
+          const href = item.href.split('#')[0];
+          if (docPath.endsWith(href) && href.length > bestLen) {
+            chapter = item.label;
+            bestLen = href.length;
+          }
+        });
+      }
+    }
+  } catch (_) {}
+
   const annotation = {
     id: `${type}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
     type,
@@ -1482,6 +1590,7 @@ async function addAnnotation(type, color, note = '') {
     text: selectedText(),
     color,
     note,
+    chapter,
     createdAt: Date.now()
   };
 
@@ -1700,30 +1809,37 @@ function generateAnnotationsMarkdown(annotations, bookInfo) {
   return lines.join('\n');
 }
 
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 function renderMarkdownPreview(md) {
   const lines = md.split('\n');
   let html = '';
   let inBlockquote = false;
 
+  const esc = escapeHtml;
+
   lines.forEach(line => {
     if (line.startsWith('# ')) {
       if (inBlockquote) { html += '</div>'; inBlockquote = false; }
-      html += `<div class="md-h1">${line.slice(2)}</div>`;
+      html += `<div class="md-h1">${esc(line.slice(2))}</div>`;
     } else if (line.startsWith('## ')) {
       if (inBlockquote) { html += '</div>'; inBlockquote = false; }
-      html += `<div class="md-h2">${line.slice(3)}</div>`;
+      html += `<div class="md-h2">${esc(line.slice(3))}</div>`;
     } else if (line.startsWith('*') && line.endsWith('*') && !line.startsWith('**')) {
       if (inBlockquote) { html += '</div>'; inBlockquote = false; }
-      html += `<div class="md-italic">${line.slice(1, -1)}</div>`;
+      html += `<div class="md-italic">${esc(line.slice(1, -1))}</div>`;
     } else if (line.startsWith('> **')) {
-      const rest = line.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
+      // Escape the text first, then apply safe bold/italic formatting
+      const rest = esc(line.slice(2)).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
       if (!inBlockquote) { html += '<div class="md-blockquote">'; inBlockquote = true; }
       html += `<div class="md-bq-header">${rest}</div>`;
     } else if (line.startsWith('> **Note:**')) {
-      const noteText = line.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      const noteText = esc(line.slice(2)).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       html += `<div class="md-note">${noteText}</div>`;
     } else if (line.startsWith('> ') && inBlockquote) {
-      html += `<div class="md-bq-text">${line.slice(2)}</div>`;
+      html += `<div class="md-bq-text">${esc(line.slice(2))}</div>`;
     } else if (line.startsWith('>') && !line.slice(1).trim()) {
       // Empty blockquote line - just spacing
     } else if (line === '') {
